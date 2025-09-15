@@ -1,0 +1,475 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Announcements - SmartLearning</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/teacher/announcement.css' %}" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+</head>
+<body>
+   <style>
+   body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+  }
+  
+  /* Header */
+  .main-header {
+    background-color: #003366;
+    color: white;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    height: 60px;
+    padding-right: 20px;
+  }
+  
+  .logo-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .brand-name {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .logout-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 5px 10px;
+    margin-right: 20px;
+  }
+  
+  .logout-link:hover {
+    text-decoration: underline;
+  }
+  
+      /* Fixed Sidebar below header */
+.sidebar {
+  width: 230px;
+  height: calc(100vh - 60px); /* 60px = header height */
+  position: fixed;
+  top: 60px; 
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;      /* enables vertical scroll */
+  box-sizing: border-box; /* include padding in height calculation */
+  scrollbar-width: thin;  /* Firefox thin scrollbar */
+}
+
+/* Optional: Custom scrollbar for Chrome/Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+  .sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  .sidebar a {
+    display: block;
+    padding: 12px 20px;
+    margin: 10px 15px;
+    text-decoration: none;
+    font-size: 12px;
+    background-color: #003366;
+    border-radius: 6px;
+    color: white;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .sidebar a:hover {
+    background-color: #0066CC;
+    transform: translateX(5px);
+  }
+  
+  .sidebar i {
+    margin-right: 10px;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+  
+  .sidebar a.active {
+    background-color: white;
+    color: #003366;
+    font-weight: bold;
+    border-left: 4px solid #ffcc00;
+  }
+  
+  .sidebar a.active:hover {
+    background-color: #e6e6e6;
+  }
+  
+  .announcement-container {
+    max-width: 1000px;
+    margin:4px auto 30px 230px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    
+  }
+  
+  .announcement-container h2 {
+    color: #003366;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-weight: bold;
+    margin-top: 15px;
+    display: block;
+  }
+  
+  input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  button {
+    margin-top: 20px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #002b55;
+  }
+  
+  /* Announcement List */
+  .recent-announcements {
+    margin-top: 40px;
+  }
+  
+  .recent-announcements h3 {
+    margin-bottom: 15px;
+    color: #003366;
+  }
+  
+  .announcement-card {
+    background: #f9f9f9;
+    padding: 15px;
+    border-left: 5px solid #003366;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  
+  .announcement-card h4 {
+    margin: 0;
+    color: #002b55;
+  }
+  
+  .announcement-card p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .announcement-card small {
+    color: gray;
+    font-style: italic;
+  }
+  
+
+    #msgBox p {
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+    }
+    #msgBox .success { background-color: green; }
+    #msgBox .error { background-color: red; }
+   
+      
+
+
+.announcement-card {
+  background: #f9f9f9;
+  padding: 15px 40px 15px 15px;   /* right padding zyada rakha delete btn ke liye */
+  border-left: 5px solid #003366;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  position: relative;  /*  allow absolute button */
+}
+
+.delete-btn {
+  position: absolute;   /*  place button in top-right */
+  top: 10px;
+  right: 10px;
+  background: red;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.delete-btn:hover {
+  background: darkred;
+}
+
+  </style>
+
+
+  
+
+<!-- Header -->
+<header class="dashboard-header">
+  <div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="SmartLearning" class="logo-img" />
+    <h1>SmartLearning</h1>
+  </div>
+  <ul>
+    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</header>
+
+
+<div class="sidebar">
+  <h2>Teacher Panel</h2>
+  <a href="{% url 'teacher_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+  <a href="{% url 'teacher_my_subjects' %}"><i class="fas fa-book"></i> My Subjects</a>
+  <a href="{% url 'tmy_students' %}"><i class="fas fa-user-graduate"></i> My Students</a>
+  <a href="{% url 'upload_material' %}"><i class="fas fa-upload"></i> Upload Material</a>
+  <a href="{% url 'quiz_creator' %}"><i class="fas fa-question-circle"></i> Quiz Creator</a>
+  <a href="{% url 'update_performance' %}"><i class="fas fa-chart-line"></i> Update Performance</a>
+  <a href="{% url 'teacher_announcement' %}" class="active"><i class="fas fa-bullhorn"></i> Announcements</a>
+</div>
+
+<main class="announcement-container">
+
+  <!-- Message Box -->
+  <div id="msgBox"></div>
+
+  <h2>Create Announcement</h2>
+
+  <form method="post" id="announcementForm">
+    {% csrf_token %}
+
+    <label>Select Semester:</label>
+    <select id="semesterSelect" name="semester" required>
+      <option value="">--Select Semester--</option>
+      {% for sem in semesters %}
+        <option value="{{ sem.id }}">{{ sem.title }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Select Subject:</label>
+    <select id="subjectSelect" name="subject" required>
+      <option value="">--Select Subject--</option>
+    </select>
+
+    <label>Announcement Type:</label>
+    <select name="type" required>
+      <option value="">--Select Type--</option>
+      <option>Quiz</option>
+      <option>Assignment</option>
+      <option>Midterm</option>
+      <option>Final</option>
+      <option>Other</option>
+    </select>
+
+    <label>Title:</label>
+    <input type="text" name="title" required>
+
+    <label>Description:</label>
+    <textarea name="description" required></textarea>
+
+    <label>Announcement Date:</label>
+    <input type="date" name="date">
+
+    <button type="submit">Post Announcement</button>
+  </form>
+
+  
+<section class="recent-announcements">
+  <div id="announcementList">
+    {% for ann in announcements %}
+      <div class="announcement-card" id="announcement-{{ ann.id }}">
+        <strong>{{ ann.title }} ({{ ann.type }})</strong>
+        <p>{{ ann.description }}</p>
+        <small>
+          Semester: {{ ann.semester.title }}, 
+          Subject: {{ ann.subject.title }}, 
+          Date: {{ ann.date_posted }}
+        </small>
+
+        <!-- Backend delete button -->
+        <button class="delete-btn" data-id="{{ ann.id }}">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    {% empty %}
+      <p>No announcements yet.</p>
+    {% endfor %}
+  </div>
+</section>
+
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const semesterSelect = document.getElementById('semesterSelect');
+  const subjectSelect = document.getElementById('subjectSelect');
+  const form = document.getElementById('announcementForm');
+  const announcementList = document.getElementById('announcementList');
+  const msgBox = document.getElementById('msgBox');
+
+  // Load subjects dynamically
+  semesterSelect.addEventListener('change', function() {
+    const semesterId = this.value;
+    subjectSelect.innerHTML = '<option value="">Loading...</option>';
+    if (!semesterId) {
+      subjectSelect.innerHTML = '<option value="">--Select Subject--</option>';
+      return;
+    }
+    fetch(`/get-subjects/${semesterId}/`)
+      .then(res => res.json())
+      .then(data => {
+        subjectSelect.innerHTML = '<option value="">--Select Subject--</option>';
+        data.forEach(sub => {
+          const option = document.createElement('option');
+          option.value = sub.id;
+          option.textContent = sub.title + " (" + (sub.code || "") + ")";
+          subjectSelect.appendChild(option);
+        });
+      })
+      .catch(err => {
+        console.error("Error fetching subjects:", err);
+        subjectSelect.innerHTML = '<option value="">--Select Subject--</option>';
+      });
+  });
+
+  // AJAX submit with instant feedback
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    // Show "Posting..." message
+    msgBox.innerHTML = '<p class="success"> Posting announcement...</p>';
+
+    fetch(window.location.href, {
+      method: "POST",
+      headers: {"X-Requested-With": "XMLHttpRequest"},
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      msgBox.innerHTML = ""; // clear previous messages
+      if(data.status === "success"){
+        announcementList.innerHTML = data.html;
+        form.reset();
+        subjectSelect.innerHTML = '<option value="">--Select Subject--</option>';
+
+        // Show success message
+        const successP = document.createElement('p');
+        successP.className = "success";
+        successP.textContent = " Your announcement was posted successfully!";
+        msgBox.appendChild(successP);
+
+        // Hide message after 3 seconds
+        setTimeout(() => msgBox.innerHTML = "", 3000);
+      } else {
+        const errorP = document.createElement('p');
+        errorP.className = "error";
+        errorP.textContent = "❌ " + data.message;
+        msgBox.appendChild(errorP);
+        setTimeout(() => msgBox.innerHTML = "", 3000);
+      }
+    })
+    .catch(err => {
+      msgBox.innerHTML = "";
+      const errorP = document.createElement('p');
+      errorP.className = "error";
+      errorP.textContent = "❌ Network error. Try again.";
+      msgBox.appendChild(errorP);
+      setTimeout(() => msgBox.innerHTML = "", 3000);
+      console.error("Error posting announcement:", err);
+    });
+  });
+});
+document.addEventListener("DOMContentLoaded", function () {
+  const msgBox = document.getElementById("msgBox");
+
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const annId = this.getAttribute("data-id");
+
+      if (!confirm("Do you really want to delete this announcement?")) return;
+
+      fetch(`/delete-announcement/${annId}/`, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}", 
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === "success") {
+            // Remove from DOM
+            const card = document.getElementById("announcement-" + annId);
+            if (card) card.remove();
+
+            msgBox.innerHTML = `<p class="success">✅ Announcement deleted!</p>`;
+            setTimeout(() => (msgBox.innerHTML = ""), 3000);
+          } else {
+            msgBox.innerHTML = `<p class="error">❌ ${data.message}</p>`;
+            setTimeout(() => (msgBox.innerHTML = ""), 3000);
+          }
+        })
+        .catch((err) => {
+          console.error("Error deleting:", err);
+          msgBox.innerHTML = `<p class="error">❌ Network error!</p>`;
+          setTimeout(() => (msgBox.innerHTML = ""), 3000);
+        });
+    });
+  });
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Update Teacher</title>
+  <link rel="stylesheet" href="{% static 'css/manageupdatetea.css' %}" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    <span class="brand-name">Smart Learning</span>
+  </div>
+  <ul>
+    <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</header>
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="{% url 'admindashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{% url 'manage_students' %}"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+      <li><a href="{% url 'manageaddteacher' %}" class="active"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+      <li><a href="{% url 'manage_semesters' %}"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="teacher-container">
+      <div class="header-bar">
+        <h2>Update Teacher {{ teacher.name }}</h2>
+        
+        <a href="{% url 'view_teachers' %}" class="view-all"><i class="fas fa-users"></i> View All Teachers</a>
+      </div>
+
+      <!-- Validation Messages -->
+        
+          {% if messages %}
+  <div id="django-messages">
+    {% for message in messages %}
+      <div 
+        class="alert 
+               {% if message.tags == 'success' %}alert-success{% endif %}
+               {% if message.tags == 'error' %}alert-danger{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<script>
+  // 6 second (6000ms) baad hide
+  setTimeout(function() {
+    let msgBox = document.getElementById("django-messages");
+    if (msgBox) {
+      msgBox.style.display = "none";
+    }
+  }, 6000); // <-- 6000 = 6 seconds (10s ke liye 10000 kar do)
+</script>
+
+<style>
+  .alert-success {
+    color: green !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .alert-danger {
+    color: red !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+</style>
+
+      {% if form.errors %}
+      <div class="error-message" style="color: red; margin-bottom: 15px;">
+        <ul>
+          {% for field in form %}
+            {% for error in field.errors %}
+              <li>{{ field.label }}: {{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!--  Update Form -->
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label>Teacher Name</label>
+          <input type="text" name="name" value="{{ form.name.value }}" required>
+        </div>
+        <div class="form-group">
+          <label>Teacher Contact #</label>
+          <input type="text" name="contact" value="{{ form.contact.value }}" required>
+        </div>
+        <div class="form-group">
+          <label>Teacher Email</label>
+          <input type="email" name="email" value="{{ form.email.value }}" required>
+        </div>
+        <div class="form-group">
+          <label>Teacher Qualification</label>
+          <input type="text" name="qualification" value="{{ form.qualification.value }}" required>
+        </div>
+        <div class="form-group">
+          <label>Teacher Experience</label>
+          <input type="text" name="experience" value="{{ form.experience.value }}" required>
+        </div>
+        <div class="form-group">
+          <label>Teacher Image</label>
+          <input type="file" name="image">
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-submit" type="submit">Update Teacher</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script src="{% static 'js/manageupdatetea.js' %}"></script>
+</body>
+</html>

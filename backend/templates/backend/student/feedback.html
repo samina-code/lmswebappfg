@@ -1,0 +1,286 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Feedback</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/student/subject.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body {
+  background-color: #fff;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+  
+     .dashboard-header {
+    background: #003366;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 600;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .logo-img {
+   
+      height: 50px; /* Adjust the size to make it bigger */
+      width: 50px;  /* Ensure the width is equal to height for a perfect circle */
+      border-radius: 50%; /* This makes the logo circular */
+      object-fit: cover; /* Ensures the logo scales properly */
+  }
+  
+ 
+  
+  header ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  header ul li a {
+    text-decoration: none;
+    color: #e8eaed;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  
+  header ul li a:hover {
+    color: #ffcc00;
+  }
+  
+  
+  
+  
+
+
+.sidebar h2 {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Fixed Sidebar below header */
+.sidebar {
+  width: 238px;
+  height: calc(100vh - 60px); /* 60px = header height */
+  position: fixed;
+  top: 80px; 
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;      /* enables vertical scroll */
+  box-sizing: border-box; /* include padding in height calculation */
+  scrollbar-width: thin;  /* Firefox thin scrollbar */
+}
+
+/* Optional: Custom scrollbar for Chrome/Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+
+.sidebar a:hover {
+  background-color: #0066CC;
+  transform: translateX(5px);
+}
+
+.sidebar i {
+  margin-right: 10px;
+  font-size: 18px;
+  vertical-align: middle;
+}
+.sidebar a.active {
+  background-color: white;
+  color: #003366;
+  font-weight: bold;
+  border-left: 4px solid #ffcc00;
+}
+.sidebar a {
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar a.active:hover {
+  background-color: #e6e6e6;
+}
+
+  
+
+
+.feedback-container {
+  max-width: 800px;
+   margin-top: 10px !important;
+  margin: 20px auto 30px 270px; /* top | right | bottom | left */
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: calc(100% - 320px);
+}
+
+
+.feedback-container h2 {
+  margin-bottom: 20px;
+  color: #004080;
+}
+
+.feedback-container label {
+  display: block;
+  margin: 12px 0 5px;
+  font-weight: bold;
+}
+
+.feedback-container input,
+.feedback-container select,
+.feedback-container textarea,
+.feedback-container button {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.feedback-container button {
+  background-color: #004080;
+  color: white;
+  cursor: pointer;
+}
+
+.feedback-container button:hover {
+  background-color: #003060;
+}
+
+  
+
+  
+
+    .logo-section { display: flex; align-items: center; }
+    .logo { width: 40px; height: 40px; margin-right: 10px; }
+    .brand-name { font-size: 24px; font-weight: bold; }
+    .nav-links { display: flex; align-items: center; }
+    .logout-link { color: white; text-decoration: none; font-size: 16px; font-weight: bold; padding: 8px 16px; margin-right: 15px; }
+    .logout-link:hover { text-decoration: underline; }
+    .sidebar { width: 230px; height: calc(100vh - 60px); position: fixed; top: 60px; left: 0; background-color: #0066CC; color: white; padding: 20px 0; overflow-y: auto; }
+    .sidebar h2 { text-align: center; margin-bottom: 20px; font-size: 20px; font-weight: bold; letter-spacing: 1px; }
+    .sidebar a { display: block; padding: 12px 20px; margin: 10px 15px; text-decoration: none; font-size: 12px; background-color: #003366; border-radius: 6px; color: white; transition: background 0.3s, transform 0.2s; }
+    .sidebar a:hover { background-color: #0066CC; transform: translateX(5px); }
+    .sidebar i { margin-right: 10px; font-size: 18px; vertical-align: middle; }
+    .sidebar a.active { background-color: white; color: #003366; font-weight: bold; border-left: 4px solid #ffcc00; }
+    .feedback-container { max-width: 700px; margin: 80px auto 50px 280px; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); width: calc(100% - 320px); }
+    .feedback-container h2 { margin-bottom: 20px; color: #004080; }
+    .feedback-container label { display: block; margin: 12px 0 5px; font-weight: bold; }
+    .feedback-container input, .feedback-container select, .feedback-container textarea, .feedback-container button {
+      width: 100%; padding: 10px; font-size: 15px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc;
+    }
+    .feedback-container button { background-color: #004080; color: white; cursor: pointer; }
+    .feedback-container button:hover { background-color: #003060; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER START -->
+  <header class="dashboard-header">
+    <div class="logo-container">
+      <img src="{% static 'images/logo.png' %}" alt="SmartLearning" class="logo-img" />
+      <h1>SmartLearning</h1>
+    </div>
+    <ul>
+      <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </header>
+  <!-- HEADER END -->
+
+<div class="sidebar">
+  <h2>Student Panel</h2>
+  <a href="{% url 'student_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+  <a href="{% url 'my_sem' %}" class="semester-link"><i class="bi bi-journal-text"></i> My Semester</a>
+  <a href="{% url 'subjects' %}"><i class="bi bi-folder2-open"></i> My Subjects</a>
+  <a href="{% url 'upload_assignment' %}"><i class="bi bi-cloud-upload"></i> Upload Assignment</a>
+  <a href="{% url 'my_quiz' %}"><i class="bi bi-check2-square"></i> My Quizzes</a>
+  <a href="{% url 'teacherperformance' %}"><i class="bi bi-graph-up"></i> My Performance</a>
+  <a href="{% url 'feedback' %}" class="active"><i class="bi bi-chat-square-dots"></i> Submit Feedback</a>
+  <a href="{% url 'announcement' %}"><i class="bi bi-megaphone"></i> Announcements</a>
+</div>
+
+<main class="feedback-container">
+   <!--  Messages (success/error) -->
+         {% if messages %}
+  <div id="django-messages">
+    {% for message in messages %}
+      <div 
+        class="alert 
+               {% if message.tags == 'success' %}alert-success{% endif %}
+               {% if message.tags == 'error' %}alert-danger{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+<style>
+  .alert-success { color: green; font-weight: bold; }
+  .alert-danger { color: red; font-weight: bold; }
+</style>
+
+<script>
+  // 6 second (6000ms) baad hide
+  setTimeout(function() {
+    let msgBox = document.getElementById("django-messages");
+    if (msgBox) {
+      msgBox.style.display = "none";
+    }
+  }, 6000); // <-- 6000 = 6 seconds (10s ke liye 10000 kar do)
+</script>
+
+
+  <h2>Submit Feedback</h2>
+  <form method="POST" action="{% url 'feedback' %}">
+  {% csrf_token %}
+
+  <label for="feedback_type">Feedback Type</label>
+  <select name="feedback_type" id="feedback_type" required>
+    <option value="">-- Select Type --</option>
+    <option value="complaint">Complaint</option>
+    <option value="suggestion">Suggestion</option>
+    <option value="question">Question</option>
+  </select>
+
+  <label for="feedback_text">Message</label>
+  <textarea name="feedback_text" id="feedback_text" rows="4" required></textarea>
+
+  <label for="email">Email (optional)</label>
+  <input type="email" name="email" id="email" value="{{ request.user.email }}" />
+
+  <button type="submit">Submit</button>
+</form>
+
+</main>
+
+</body>
+</html>

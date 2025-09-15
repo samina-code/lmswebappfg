@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Profile - SmartLearning</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="teditprofile.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+ <!-- SmartLearning Header -->
+<header class="dashboard-header">
+  <div class="logo-container">
+    <img src="logo.png" alt="SmartLearning " class="logo-img" />
+    <h1>SmartLearning</h1>
+  </div>
+  <ul>
+    <li><a href="SignIn.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+
+</header>
+
+  <!-- Edit Profile Form -->
+  <main class="edit-container">
+    <h2>Edit Teacher Profile</h2>
+    <label>Profile Picture:</label>
+    <div class="profile-pic-wrapper">
+      <label for="profileUpload">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" id="profilePreview" class="profile-pic-edit" />
+      </label>
+      <input type="file" id="profileUpload" accept="image/*" style="display: none;" />
+      <p>Click image to change</p>
+    </div>
+
+    <form id="editForm">
+      <label>Full Name:</label>
+      <input type="text" value="Sir Usman Ghani" required />
+
+      <label>Email:</label>
+      <input type="email" value="usman@smartlearning.edu" required />
+
+      <label>Phone:</label>
+      <input type="text" value="+92 300 1234567" required />
+
+      <label>Qualification:</label>
+      <input type="text" value="MS Computer Science" required />
+
+      <label>Department:</label>
+      <input type="text" value="Computer Science" required />
+
+      <label>Assigned Subjects:</label>
+      <input type="text" value="Web Development, Artificial Intelligence" required />
+
+      <label>Bio:</label>
+      <textarea rows="4">Passionate about empowering students through real-world coding skills.</textarea>
+
+      <div class="form-actions">
+        <button type="submit"><i class="fas fa-save"></i> Save Changes</button>
+        <button type="button" onclick="history.back()" class="secondary"> <i class="fa fa-times-circle"></i> Cancel</button>
+      </div>
+    </form>
+    
+
+  </main>
+  <script src="edit-profile.js"></script>
+</body>
+</html>

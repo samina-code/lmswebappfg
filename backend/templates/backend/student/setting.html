@@ -1,0 +1,109 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Student Settings</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/setting.css' %}">
+</head>
+
+<body>
+
+  <header class="main-header">
+    <div class="logo-section">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="logo">
+      <span class="brand-name">SmartLearning</span>
+    </div>
+    <nav>
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+      <a href="{% url 'setting' %}" class="active">Settings</a>
+
+    </nav>
+  </header>
+
+  <main class="settings-container">
+    <h2>Student Settings</h2>
+
+    <!-- Profile Section -->
+    <section class="settings-section">
+      <h3><i class="fas fa-user-circle"></i> Profile</h3>
+      <a href="{% url 'profile' %}" class="btn">Edit Profile</a>
+      <form action="{% url 'update_profile_pic' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="profileUpload">
+          <img src="{{ user.profile_picture.url|default:'https://randomuser.me/api/portraits/men/32.jpg' }}"
+            id="profilePreview" class="profile-pic" alt="Profile Picture" />
+        </label>
+        <input type="file" name="profile_picture" id="profileUpload" accept="image/*" style="display: none;" />
+        <button type="submit">Change Profile Picture</button>
+      </form>
+    </section>
+
+    <!-- Security Section -->
+    <section class="settings-section">
+      <h3><i class="fas fa-lock"></i> Security</h3>
+      <button onclick="toggleSection('changePasswordSection')">Change Password</button>
+    </section>
+
+    <div class="change-password-section" id="changePasswordSection" style="display: none;">
+      <form id="passwordForm" method="post" action="{% url 'change_password' %}">
+        {% csrf_token %}
+        <label>Current Password</label>
+        <input type="password" name="old_password" required />
+
+        <label>New Password</label>
+        <input type="password" name="new_password1" required />
+
+        <label>Confirm New Password</label>
+        <input type="password" name="new_password2" required />
+
+        <button type="submit">Update Password</button>
+      </form>
+      {% if messages %}
+      {% for message in messages %}
+      <p id="passMsg" class="pass-message">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- Notifications -->
+    <section class="settings-section">
+      <h3><i class="fas fa-bell"></i> Notifications</h3>
+      <label><input type="checkbox" checked> Email Notifications</label>
+      <label><input type="checkbox"> App Alerts</label>
+    </section>
+
+    <!-- Preferences -->
+    <section class="settings-section">
+      <h3><i class="fas fa-cogs"></i> Preferences</h3>
+      <label>Language:
+        <select>
+          <option>English</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="darkMode"> Enable Dark Mode</label>
+    </section>
+
+    <!-- Download -->
+    <section class="settings-section">
+      <h3><i class="fas fa-file-download"></i> Download</h3>
+      <a href="{% url 'download_profile' %}" class="btn">Download Profile PDF</a>
+    </section>
+
+    <!-- Account -->
+    <section class="settings-section">
+      <h3><i class="fas fa-sign-out-alt"></i> Account</h3>
+      <a href="{% url 'logout' %}" class="btn logout-btn">Logout</a>
+    </section>
+  </main>
+
+  <!-- JS -->
+  <script src="{% static 'js/setting.js' %}"></script>
+</body>
+
+</html>

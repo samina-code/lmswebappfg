@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Start Quiz</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/student/startquiz.css' %}">
+</head>
+
+<body>
+<style>
+  /* Sidebar */
+  .sidebar {
+    width: 238px;
+    height: calc(100vh - 60px);
+    position: fixed;
+    top: 80px;
+    left: 0;
+    background-color: #0066CC;
+    color: white;
+    padding: 20px 0;
+    overflow-y: auto;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+  }
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+  }
+
+  /* Header */
+  .main-header {
+    background-color: #003366;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    height: 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .logo-section { display: flex; align-items: center; }
+  .logo { width: 45px; height: 45px; margin-right: 10px; border-radius: 50%; }
+  .brand-name { font-size: 22px; font-weight: bold; color: white; }
+  .logout-link { color: white; text-decoration: none; font-size: 16px; font-weight: bold; margin-right: 40px; }
+  .logout-link:hover { color: #ffcc00; }
+
+  /* Timer */
+  #timer {
+    font-weight: bold;
+    font-size: 18px;
+    color: red;
+    margin: 15px 0;
+  }
+</style>
+
+<!-- Header -->
+<header class="main-header">
+  <div class="logo-section">
+    <img src="{% static 'images/logo.png' %}" alt="SmartLearning" class="logo" />
+    <span class="brand-name">SmartLearning</span>
+  </div>
+  <a href="{% url 'SignIn' %}" class="logout-link">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </a>
+</header>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>Student Panel</h2>
+  <a href="{% url 'student_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+  <a href="{% url 'my_sem' %}"><i class="bi bi-journal-text"></i> My Semester</a>
+  <a href="{% url 'subjects' %}"><i class="bi bi-folder2-open"></i> My Subjects</a>
+  <a href="{% url 'upload_assignment' %}"><i class="bi bi-cloud-upload"></i> Upload Assignment</a>
+  <a href="{% url 'my_quiz' %}" class="active"><i class="bi bi-check2-square"></i> My Quizzes</a>
+  <a href="{% url 'teacherperformance' %}"><i class="bi bi-graph-up"></i> My Performance</a>
+  <a href="{% url 'feedback' %}"><i class="bi bi-chat-square-dots"></i> Submit Feedback</a>
+  <a href="{% url 'announcement' %}"><i class="bi bi-megaphone"></i> Announcements</a>
+</div>
+
+<!-- Main Content -->
+<main class="quiz-container">
+  <h2><i class="fas fa-clipboard-question"></i> Quiz: {{ quiz.title }}</h2>
+
+  {% if score is None %}
+    <!-- Timer -->
+    <div id="timer">Time Remaining: --</div>
+
+    <!-- Quiz Form -->
+    <form id="quizForm" method="post">
+      {% csrf_token %}
+      {% for question in questions %}
+        <div class="question-block">
+          <p>{{ forloop.counter }}. {{ question.text }}</p>
+
+          <label><input type="radio" name="{{ question.id }}" value="A" required> {{ question.option_a }}</label><br>
+          <label><input type="radio" name="{{ question.id }}" value="B"> {{ question.option_b }}</label><br>
+          <label><input type="radio" name="{{ question.id }}" value="C"> {{ question.option_c }}</label><br>
+          <label><input type="radio" name="{{ question.id }}" value="D"> {{ question.option_d }}</label><br>
+        </div>
+      {% endfor %}
+      <button type="submit" class="submit-btn">Submit Quiz</button>
+    </form>
+  {% else %}
+    <!-- Quiz Result -->
+    <div id="resultMessage">
+      <h3>Your Score: {{ score }} / {{ total }}</h3>
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Question</th>
+            <th>Your Answer</th>
+            <th>Correct Answer</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in results %}
+          <tr class="{% if result.is_correct %}correct{% else %}wrong{% endif %}">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ result.question }}</td>
+            <td>{{ result.selected }}</td>
+            <td>{{ result.correct }}</td>
+           <td>
+  {% if result.is_correct %}
+    <i class="bi bi-check-circle-fill" style="color: green; font-size: 18px;"></i>
+  {% else %}
+    <i class="bi bi-x-circle-fill" style="color: red; font-size: 18px;"></i>
+  {% endif %}
+</td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</main>
+
+<!-- Countdown Script -->
+{% if remaining_seconds %}
+<script>
+  let remaining = {{ remaining_seconds }};
+  const timerEl = document.getElementById("timer");
+  const form = document.getElementById("quizForm");
+
+  function updateTimer() {
+    let minutes = Math.floor(remaining / 60);
+    let seconds = remaining % 60;
+    timerEl.textContent = ` Time Remaining: ${minutes}:${seconds.toString().padStart(2, "0")}`;
+
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      alert(" Time is up! Your quiz will be auto-submitted.");
+      if (form) form.submit();
+    }
+    remaining--;
+  }
+
+  updateTimer();
+  const timerInterval = setInterval(updateTimer, 1000);
+</script>
+{% endif %}
+
+</body>
+</html>

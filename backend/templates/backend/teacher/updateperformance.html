@@ -1,0 +1,349 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Performance Entry - SmartLearning</title>
+
+  <!-- Icons + Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/teacher/updateperormance.css' %}" />
+  
+</head>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+  }
+/*  Fixed Header */
+
+
+.sidebar {
+  width: 230px;
+  height: calc(100vh - 60px); /* 60px = header height */
+  position: fixed;
+  top: 80px; 
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;      /* enables vertical scroll */
+  box-sizing: border-box; /* include padding in height calculation */
+  scrollbar-width: thin;  /* Firefox thin scrollbar */
+}
+
+/* Optional: Custom scrollbar for Chrome/Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px 20px;
+  margin: 10px 15px;
+  text-decoration: none;
+  font-size: 11.7px;
+  background-color: #003366;
+  border-radius: 6px;
+  color: white;
+  transition: background 0.3s, transform 0.2s;
+}
+.sidebar a:hover {
+  background-color: #0066CC;
+  transform: translateX(5px);
+}
+.sidebar i {
+  margin-right: 10px;
+  font-size: 18px;
+  vertical-align: middle;
+}
+.sidebar a.active {
+  background-color: white;
+  color: #003366;
+  font-weight: bold;
+  border-left: 4px solid #ffcc00;
+}
+.sidebar a.active:hover {
+  background-color: #e6e6e6;
+}
+
+/* Main Content */
+
+.performance-container {
+  max-width: 800px;
+  margin: 0px auto 30px 230px; /* Top, Right, Bottom, Left (adjusted for sidebar) */
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Headings & Inputs */
+.performance-container h2 {
+  color: #003366;
+  margin-bottom: 20px;
+}
+#searchInput {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 30px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Student Cards */
+.performance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.student-card {
+  background: #f9f9f9;
+  border-left: 5px solid #003366;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #003366;
+}
+.student-info {
+  flex-grow: 1;
+}
+.student-info h4 {
+  margin: 0;
+  color: #003366;
+}
+.student-info p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 8px 20px;
+  margin-top: 10px;
+}
+.cgpa {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #006600;
+}
+
+  /* Header Styling */
+.dashboard-header {
+  height: 60px;  /* fix kar do height */
+  line-height: 60px;
+  background: #003366;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 600;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-img {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+header ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+header ul li a {
+  text-decoration: none;
+  color: #e8eaed;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+header ul li a:hover {
+  color: #ffcc00;
+}
+  #messageContainer p {
+      padding: 8px; 
+      margin: 5px 0; 
+      font-weight: bold;
+      border-radius: 4px;
+      color: white;
+    }
+    #messageContainer .success { background-color: green; }
+    #messageContainer .error { background-color: red; }
+</style>
+<body>
+
+  <!-- Header -->
+<header class="dashboard-header">
+  <div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="SmartLearning" class="logo-img" />
+    <h1>SmartLearning</h1>
+  </div>
+  <ul>
+    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</header>
+
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Teacher Panel</h2>
+    <a href="{% url 'teacher_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{% url 'teacher_my_subjects' %}"><i class="fas fa-book"></i> My Subjects</a>
+    <a href="{% url 'tmy_students' %}"><i class="fas fa-user-graduate"></i> My Students</a>
+    <a href="{% url 'upload_material' %}"><i class="fas fa-upload"></i> Upload Material</a>
+    <a href="{% url 'quiz_creator' %}"><i class="fas fa-question-circle"></i> Quiz Creator</a>
+    <a href="{% url 'update_performance' %}" class="active"><i class="fas fa-chart-line"></i> Update Performance</a>
+    <a href="{% url 'teacher_announcement' %}"><i class="fas fa-bullhorn"></i> Announcements</a>
+  </div>
+
+  <!-- Performance Form -->
+  <main class="performance-container">
+
+    <!-- Django Messages -->
+    {% if messages %}
+      <div id="messageContainer" style="text-align:center; margin:10px 0;">
+        {% for message in messages %}
+          <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+      <script>
+        setTimeout(() => {
+          const container = document.getElementById("messageContainer");
+          if(container) container.style.display = "none";
+        }, 3000);
+      </script>
+    {% endif %}
+
+    <h2>Enter Student Performance</h2>
+
+    <form method="post" id="performanceForm">
+      {% csrf_token %}
+
+     
+      <label>Semester:</label>
+      <select name="semester" id="semesterSelect" required>
+        <option value="">--Select Semester--</option>
+        {% for sem in semesters %}
+          <option value="{{ sem.id }}">{{ sem.title }}</option>
+        {% endfor %}
+      </select>
+       <label>Student:</label>
+      <select name="student" id="studentSelect" required>
+    <option value="">--Select Student--</option>
+</select>
+
+
+
+      <label>Subject:</label>
+      <select name="subject" id="subjectSelect" required>
+        <option value="">--Select Subject--</option>
+      </select>
+
+      <label>Assignment Marks (out of 10):</label>
+<input type="number" name="assignment" max="10" min="0" required />
+
+<label>Quiz Marks (out of 5):</label>
+<input type="number" name="quiz" max="5" min="0" required />
+
+<label>Midterm Marks (out of 25):</label>
+<input type="number" name="midterm" max="25" min="0" required />
+
+<label>Final Marks (out of 60):</label>
+<input type="number" name="final" max="60" min="0" required />
+
+      <button type="submit"><i class="fas fa-save"></i> Save Performance</button>
+    </form>
+
+   
+
+  </main>
+
+  <!-- JS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const semesterSelect = document.getElementById("semesterSelect");
+      const subjectSelect = document.getElementById("subjectSelect");
+
+      semesterSelect.addEventListener("change", function() {
+        const semesterId = this.value;
+        subjectSelect.innerHTML = '<option value="">--Select Subject--</option>';
+
+        if (!semesterId) return;
+
+        fetch(`/get-subjects/${semesterId}/`)
+        .then(res => res.json())
+        .then(data => {
+          data.forEach(subject => {
+            const option = document.createElement("option");
+            option.value = subject.id;
+            option.textContent = subject.title + " (" + (subject.code || "") + ")";
+            subjectSelect.appendChild(option);
+          });
+        })
+        .catch(err => console.error("Error fetching subjects:", err));
+      });
+    });
+   
+document.getElementById('semesterSelect').addEventListener('change', function() {
+    const semesterId = this.value;
+
+    // Fetch students for selected semester
+    fetch(`/ajax/get_students/${semesterId}/`)
+        .then(response => response.json())
+        .then(data => {
+            const studentSelect = document.getElementById('studentSelect');
+            studentSelect.innerHTML = '<option value="">Select Student</option>';
+            data.forEach(student => {
+                studentSelect.innerHTML += `<option value="${student.id}">${student.name}</option>`;
+            });
+        });
+
+});
+</script>
+
+  
+
+</body>
+</html>

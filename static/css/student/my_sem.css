@@ -1,0 +1,141 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: #f9f9f9;
+  padding: 0;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #eee;
+}
+
+.dashboard-header {
+  background: #003366;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 600;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.logo-img {
+  height: 50px;
+  /* Adjust the size to make it bigger */
+  width: 50px;
+  /* Ensure the width is equal to height for a perfect circle */
+  border-radius: 50%;
+  /* This makes the logo circular */
+  object-fit: cover;
+  /* Ensures the logo scales properly */
+}
+
+header ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+header ul li a {
+  text-decoration: none;
+  color: #e8eaed;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+header ul li a:hover {
+  color: #ffcc00;
+}
+
+.sidebar {
+  width: 230px;
+  height: calc(100vh - 60px);
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px 20px;
+  margin: 10px 15px;
+  text-decoration: none;
+  font-size: 13px;
+  background-color: #003366;
+  border-radius: 6px;
+  color: white;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar a:hover {
+  background-color: #0066CC;
+  transform: translateX(5px);
+}
+
+.sidebar i {
+  margin-right: 10px;
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+.sidebar a.active {
+  background-color: white;
+  color: #003366;
+  font-weight: bold;
+  border-left: 4px solid #ffcc00;
+}
+
+.sidebar a {
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar a.active:hover {
+  background-color: #e6e6e6;
+}
+
+
+/* SEMESTER SECTION */
+
+.semester-section {
+  padding: 30px;
+  max-width: 1000px;
+  margin: 100px 30px 30px 250px;
+  /* top | right | bottom | left */
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+#semesterDetails p {
+  margin: 8px 0;
+}
+

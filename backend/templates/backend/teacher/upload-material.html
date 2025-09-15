@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Material - SmartLearning</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/teacher/upload-material.css' %}">
+  <style>
+    /* Reset and font */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+    }
+
+    /* Fixed header */
+    .main-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: #003366;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      z-index: 999;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-section .logo {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+    }
+    .logo-section .brand-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+    }
+    .header-right {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+ .header-right li a {
+  text-decoration: none;
+  color: #e8eaed;
+  font-weight: 500;
+  font-size: 16px;
+   padding-right: 50px; 
+}
+
+    .header-right li a:hover {
+  color: #ffcc00;
+}
+    
+    /* Sidebar */
+.sidebar {
+  width: 230px;
+  height: calc(100vh - 60px); /* 60px = header height */
+  position: fixed;
+  top: 80px; 
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;      /* enables vertical scroll */
+  box-sizing: border-box; /* include padding in height calculation */
+  scrollbar-width: thin;  /* Firefox thin scrollbar */
+}
+
+/* Optional: Custom scrollbar for Chrome/Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+    .sidebar h2 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .sidebar a {
+      display: block;
+      padding: 12px 20px;
+      margin: 10px 15px;
+      text-decoration: none;
+      font-size: 12px;
+      color: white;
+      border-radius: 6px;
+      background: #003366;
+      transition: 0.3s;
+    }
+    .sidebar a:hover { background: #0066CC; transform: translateX(5px);}
+    .sidebar a.active {
+      background: white;
+      color: #003366;
+      border-left: 4px solid #ffcc00;
+      font-weight: bold;
+    }
+
+    /* Main content */
+    .upload-container {
+      margin-left: 230px; /* sidebar width */
+      padding: 10px 30px 30px 30px; /* top padding = header + some space */
+      max-width: 1000px;
+    }
+    .upload-container h2 {
+      color: #003366;
+      margin-bottom: 20px;
+    }
+    .upload-container label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .upload-container input[type="text"],
+    .upload-container select,
+    .upload-container input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    .upload-container button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #003366;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .upload-container button:hover {
+      background-color: #002952;
+    }
+
+    /* Uploaded materials */
+    .uploaded-section {
+      margin-top: 40px;
+    }
+    .uploaded-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .uploaded-section li {
+      background: #f8f9fa;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-view { background: #28a745; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; }
+    .btn-view:hover { background: #218838; }
+    .btn-delete { background: #dc3545; color: white; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer;}
+    .btn-delete:hover { background: #c82333; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo-section">
+      <img src="{% static 'images/logo.png' %}" class="logo" alt="SmartLearning Logo"/>
+      <span class="brand-name">SmartLearning</span>
+    </div>
+    <ul class="header-right">
+      <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </header>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Teacher Panel</h2>
+    <a href="{% url 'teacher_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{% url 'teacher_my_subjects' %}"><i class="fas fa-book"></i> My Subjects</a>
+    <a href="{% url 'tmy_students' %}"><i class="fas fa-user-graduate"></i> My Students</a>
+    <a href="{% url 'upload_material' %}" class="active"><i class="fas fa-upload"></i> Upload Material</a>
+    <a href="{% url 'quiz_creator' %}"><i class="fas fa-question-circle"></i> Quiz Creator</a>
+    <a href="{% url 'update_performance' %}"><i class="fas fa-chart-line"></i> Update Performance</a>
+    <a href="{% url 'teacher_announcement' %}"><i class="fas fa-bullhorn"></i> Announcements</a>
+  </div>
+
+  <!-- Main Content -->
+  <main class="upload-container">
+    {% if messages %}
+      <div id="messages">
+        {% for message in messages %}
+          <p style="color: {% if message.tags == 'error' %}red{% elif message.tags == 'success' %}green{% else %}black{% endif %};">
+            {{ message }}
+          </p>
+        {% endfor %}
+      </div>
+      <script>
+        setTimeout(()=>{document.getElementById("messages").style.display="none";},3000);
+      </script>
+    {% endif %}
+
+    <h2>Upload Lecture Material</h2>
+    <form method="POST" enctype="multipart/form-data" action="{% url 'upload_material' %}">
+      {% csrf_token %}
+      <label for="semester">Select Semester:</label>
+      <select name="semester" id="semester">
+        <option value="">--Select Semester--</option>
+        {% for semester in semesters %}
+          <option value="{{ semester.id }}">{{ semester.title }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="subject">Select Subject:</label>
+      <select name="subject" id="subject">
+        <option value="">--Select Subject--</option>
+        {% for subject in subjects %}
+          <option value="{{ subject.title }}">{{ subject }}</option>
+        {% endfor %}
+      </select>
+
+      <label>Lecture Title:</label>
+      <input type="text" name="lecture_title" placeholder="e.g., Introduction to HTML" required />
+
+      <label>Upload PDF:</label>
+      <input type="file" name="pdf_file" accept=".pdf" required />
+
+      <button type="submit">Upload</button>
+    </form>
+
+    <section class="uploaded-section">
+      <h3>Uploaded Materials</h3>
+      <ul>
+        {% for material in materials %}
+          <li>
+            <span>{{ material.lecture_title }} ({{ material.semester }} - {{ material.subject.name }})</span>
+            <a href="{{ material.pdf_file.url }}" target="_blank" class="btn-view"><i class="fas fa-eye"></i> View</a>
+            <form action="{% url 'delete_material' material.id %}" method="POST" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn-delete"><i class="fas fa-trash"></i> Delete</button>
+            </form>
+          </li>
+        {% empty %}
+          <li>No materials uploaded yet.</li>
+        {% endfor %}
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById("semester").addEventListener("change", function() {
+      let semesterId = this.value;
+      let subjectDropdown = document.getElementById("subject");
+      subjectDropdown.innerHTML = '<option value="">--Select Subject--</option>';
+      if (semesterId) {
+        fetch(`/get-subjects/${semesterId}/`)
+          .then(res => res.json())
+          .then(data => {
+            data.forEach(subject => {
+              let option = document.createElement("option");
+              option.value = subject.id;
+              option.textContent = subject.title + " - " + subject.code;
+              subjectDropdown.appendChild(option);
+            });
+          });
+      }
+    });
+  </script>
+  <script src="{% static 'js/teacher/upload-material.js' %}"></script>
+</body>
+</html>

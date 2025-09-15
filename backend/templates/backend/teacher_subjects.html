@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher Subjects</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/adminviewstudent.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    <span class="brand-name">Smart Learning</span>
+  </div>
+  <ul>
+    <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</header>
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="{% url 'admindashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{% url 'manage_students' %}"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+      <li><a href="{% url 'manageaddteacher' %}" class="active"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+      <li><a href="{% url 'manage_semesters' %}"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+      {% if messages %}
+  <div id="django-messages">
+    {% for message in messages %}
+      <div 
+        class="alert 
+               {% if message.tags == 'success' %}alert-success{% endif %}
+               {% if message.tags == 'error' %}alert-danger{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<script>
+  // 6 second (6000ms) baad hide
+  setTimeout(function() {
+    let msgBox = document.getElementById("django-messages");
+    if (msgBox) {
+      msgBox.style.display = "none";
+    }
+  }, 6000); // <-- 6000 = 6 seconds (10s ke liye 10000 kar do)
+</script>
+
+<style>
+  .alert-success {
+    color: green !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .alert-danger {
+    color: red !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+</style>
+
+    <h2>Assigned Subjects for {{ teacher.name }}</h2>
+
+    {% if assigned_subjects %}
+    <table id="subjectsTable" class="display">
+      <thead>
+        <tr>
+          <th>Sr #</th>
+          <th>Subject</th>
+          <th>Semester</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for assigned in assigned_subjects %}
+        <tr data-id="{{ assigned.id }}">
+          <td>{{ forloop.counter }}</td>
+          <td>{{ assigned.subject.title }} ({{ assigned.subject.code }})</td>
+          <td>{{ assigned.semester.title }}</td>
+          <td>
+            <a href="{% url 'delete_assigned_subject' assigned.id %}" class="icon-btn" onclick="return confirm('Remove this subject from teacher?');">
+              <i class="fas fa-trash-alt"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>No subjects assigned to this teacher yet.</p>
+    {% endif %}
+
+  </main>
+</div>
+
+<!-- JS Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#subjectsTable').DataTable();
+  });
+</script>
+
+</body>
+</html>

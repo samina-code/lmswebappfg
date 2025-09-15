@@ -1,0 +1,231 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Performance - SmartLearning</title>
+
+  <!-- External Libraries -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+  <!-- Local CSS -->
+  <link rel="stylesheet" href="{% static 'css/student/teacherperformance.css' %}" />
+</head>
+
+
+<body>
+  <style>
+
+/* Fixed Sidebar below header */
+.sidebar {
+  width: 238px;
+  height: calc(100vh - 60px); /* 60px = header height */
+  position: fixed;
+  top: 60px; 
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;      /* enables vertical scroll */
+  box-sizing: border-box; /* include padding in height calculation */
+  scrollbar-width: thin;  /* Firefox thin scrollbar */
+}
+
+/* Optional: Custom scrollbar for Chrome/Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.performance-container {
+  padding: 20px;
+  width: 80%;
+
+}
+
+.performance-container h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #003366;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.performance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.performance-card {
+  display: flex;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #ffffff, #f0f6ff);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0px 6px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-left: 6px solid #003366;
+}
+
+.performance-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.15);
+}
+
+/* Student Photo */
+.student-photo img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #003366;
+  margin-right: 20px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Student Info */
+.student-info h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #003366;
+}
+
+.student-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.marks {
+  background: #f9fbff;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-top: 10px;
+  border: 1px solid #e3e9f7;
+}
+
+.marks p {
+  display: block;
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.marks strong {
+  color: #003366;
+}
+
+/* CGPA Highlight */
+.cgpa {
+  font-weight: bold;
+  color: #28a745;
+  margin-top: 15px;
+  font-size: 16px;
+  background: #e6f7ed;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+
+
+
+
+
+
+</style>
+  <div class="main-content">
+    <!--  SmartLearning Header -->
+    <header class="dashboard-header">
+      <div class="logo-container">
+        <img src="{% static 'images/logo.png' %}" alt="SmartLearning" class="logo-img" />
+        <h1>SmartLearning</h1>
+      </div>
+      <ul>
+        <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </header>
+
+    <!-- Sidebar -->
+<div class="sidebar">
+  <h2>Student Panel</h2>
+  <a href="{% url 'student_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+  <a href="{% url 'my_sem' %}" class="semester-link"><i class="bi bi-journal-text"></i> My Semester</a>
+  <a href="{% url 'subjects' %}"><i class="bi bi-folder2-open"></i> My Subjects</a>
+  <a href="{% url 'upload_assignment' %}"><i class="bi bi-cloud-upload"></i> Upload Assignment</a>
+  <a href="{% url 'my_quiz' %}"><i class="bi bi-check2-square"></i> My Quizzes</a>
+  <a href="{% url 'teacherperformance' %}"class="active"><i class="bi bi-graph-up"></i> My Performance</a>
+  <a href="{% url 'feedback' %}"><i class="bi bi-chat-square-dots"></i> Submit Feedback</a>
+  <a href="{% url 'announcement' %}"><i class="bi bi-megaphone"></i> Announcements</a>
+</div>
+    <!--  Performance Section -->
+    <main class="performance-container">
+      
+      <h2>Student Performance</h2>
+
+      <!--  Search Filter -->
+      <input type="text" id="searchInput" placeholder="Search by subject ..." />
+
+     <div id="performanceList" class="performance-list">
+  {% if performances %}
+  <div class="performance-card">
+    <!--  Student Image -->
+    <div class="student-photo">
+      {% if performances.0.student.image %}
+        <img src="{{ performances.0.student.image.url }}" alt="{{ performances.0.student.name }}">
+      {% else %}
+        <img src="{% static 'images/default-student.png' %}" alt="Default Student">
+      {% endif %}
+    </div>
+
+    <!--  Student Info -->
+    <div class="student-info">
+      <h3>{{ performances.0.student.name }}</h3>
+      <p><strong>Registration No:</strong> {{ performances.0.student.reg_no }}</p>
+      <p><strong>Semester:</strong> {{ performances.0.semester.title|default:"N/A" }}</p>
+
+      <!--  Subjects ke liye loop -->
+      {% for perf in performances %}
+      <div class="marks">
+        <p><strong>Subject:</strong> {{ perf.subject.title|default:"N/A" }}</p>
+        <p><i class="bi bi-pencil"></i> <strong>Assignment:</strong> {{ perf.assignment }}</p>
+        <p><i class="bi bi-check2-square"></i> <strong>Quiz:</strong> {{ perf.quiz }}</p>
+        <p><i class="bi bi-journal-text"></i> <strong>Midterm:</strong> {{ perf.midterm }}</p>
+        <p><i class="bi bi-mortarboard"></i> <strong>Final:</strong> {{ perf.final }}</p>
+        <p><strong>Remarks:</strong> {{ perf.remarks|default:"-" }}</p>
+        <hr>
+      </div>
+      {% endfor %}
+       <!-- CGPA -->
+<p class="cgpa">
+        <i class="bi bi-bar-chart-line"></i>
+        <strong>CGPA:</strong> {{ cgpa|default:"-" }}
+      </p>
+     
+    </div>
+  </div>
+  {% else %}
+  <p>No performance records found.</p>
+  {% endif %}
+</div>
+
+    </main>
+  </div>
+
+  <script src="{% static 'js/teaperformance.js' %}"></script>
+</body>
+</html>

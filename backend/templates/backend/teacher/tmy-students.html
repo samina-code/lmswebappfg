@@ -1,0 +1,440 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Students - SmartLearning</title>
+  <link rel="stylesheet" href="{% static 'css/teacher/tmy-student.css' %}" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+<header class="main-header">
+  <div class="logo-section">
+    <img src="{% static 'images/logo.png' %}" alt="SmartLearning" class="logo" />
+    <span class="brand-name">SmartLearning</span>
+  </div>
+  <ul>
+    <li>
+      <a href="{% url 'logout' %}" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </li>
+  </ul>
+</header>
+
+
+
+<div class="sidebar">
+
+     <h2>Teacher Panel</h2>
+    <a href="{% url 'teacher_dashboard' %}" ><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{% url 'teacher_my_subjects' %}"><i class="fas fa-book"></i> My Subjects</a>
+    <a href="{% url 'tmy_students' %}"class="active"><i class="fas fa-user-graduate"></i> My Students</a>
+    <a href="{% url 'upload_material' %}"><i class="fas fa-upload"></i> Upload Material</a>
+    <a href="{% url 'quiz_creator' %}"><i class="fas fa-question-circle"></i> Quiz Creator</a>
+    <a href="{% url 'update_performance' %}"><i class="fas fa-chart-line"></i> Update Performance</a>
+    <a href="{% url 'teacher_announcement' %}"><i class="fas fa-bullhorn"></i> Announcements</a>
+  </div>
+
+
+<main class="container">
+  <div class="controls">
+    <form method="get" action="{% url 'tmy_students' %}">
+      <select name="semester">
+        <option value="all" {% if selected_semester == 'all' %}selected{% endif %}>All Semesters</option>
+        {% for sem in semesters %}
+          <option value="{{ sem.id }}" {% if selected_semester|stringformat:'s' == sem.id|stringformat:'s' %}selected{% endif %}>{{ sem.title}}</option>
+        {% endfor %}
+      </select>
+
+      <input type="text" name="q" id="searchInput" placeholder="Search by name..." value="{{ query|default:'' }}" />
+      <button type="submit"><i class="fas fa-search"></i></button>
+    </form>
+  </div>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 0;
+  }
+  
+ 
+
+/* Fixed Sidebar below header */
+.sidebar {
+  width: 230px;
+  height: calc(100vh - 60px); /* 60px = header height */
+  position: fixed;
+  top: 80px; 
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;      /* enables vertical scroll */
+  box-sizing: border-box; /* include padding in height calculation */
+  scrollbar-width: thin;  /* Firefox thin scrollbar */
+}
+
+/* Optional: Custom scrollbar for Chrome/Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+
+  
+  
+  .sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  .sidebar a {
+    display: block;
+    padding: 12px 20px;
+    margin: 10px 15px;
+    text-decoration: none;
+    font-size: 12px;
+    background-color: #003366;
+    border-radius: 6px;
+    color: white;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .sidebar a:hover {
+    background-color: #0066CC;
+    transform: translateX(5px);
+  }
+  
+  .sidebar i {
+    margin-right: 10px;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+  
+  .sidebar a.active {
+    background-color: white;
+    color: #003366;
+    font-weight: bold;
+    border-left: 4px solid #ffcc00;
+  }
+  
+  .sidebar a.active:hover {
+    background-color: #e6e6e6;
+  }
+  
+  
+    .container {
+        margin-top: 4px;         /* To push below header */
+        margin-left: 230px;       /* To push beside sidebar */
+        padding: 30px;
+      }
+      
+      
+/* Subject grid */
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 15px;
+}
+
+/* Subject Card */
+.subject-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.subject-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Teacher Info */
+.teacher-info {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.teacher-photo {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+  border: 2px solid #4a90e2;
+}
+
+/* Headings */
+.subject-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Details */
+.subject-card p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.subject-card b {
+  color: #222;
+}
+  
+  .controls {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  #semesterFilter,
+  #searchInput {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  .students-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  
+  .student-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .student-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 2px solid #003366;
+  }
+  
+  .student-card h4 {
+    margin: 10px 0 5px;
+    color: #003366;
+  }
+  
+  .student-card p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .student-actions a {
+    text-decoration: none;
+    margin: 0 8px;
+    font-size: 14px;
+    color: #0066cc;
+  }
+  
+  .student-actions a:hover {
+    text-decoration: underline;
+  }
+  
+  /* 🔹 Common Header Styling */
+.main-header {
+  background: #003366;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 600;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-header .logo-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.main-header .logo {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.main-header .brand-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.main-header ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.main-header ul li a {
+  text-decoration: none;
+  color: #e8eaed;
+  font-weight: 500;
+  font-size: 16px;
+  transition: color 0.3s ease;
+   margin-left: auto;
+   display: flex;
+  align-items: center;
+  gap: 6px;
+   padding-right: 30px; 
+}
+
+.main-header ul li a:hover {
+  color: #ffcc00;
+}
+
+  .student-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.student-photo {
+  margin-bottom: 10px;
+}
+
+.student-photo img.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+.student-email a {
+  color: #007bff;
+  text-decoration: none;
+}
+.student-email a:hover {
+  text-decoration: underline;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.controls select,
+.controls input[type="text"] {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.controls select:focus,
+.controls input[type="text"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+.controls button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.controls button:hover {
+  background-color: #0056b3;
+}
+
+</style>
+  <div id="studentsContainer" class="students-grid">
+  {% for sp in students_qs %}
+  <div class="student-card">
+
+    <!-- Profile Image -->
+    <div class="student-photo">
+    {% if sp.student.photo %}
+  <img src="{{ sp.student.photo.url }}" alt="{{ sp.student.name }}" class="profile-pic" />
+{% elif sp.student.image %}
+  <img src="{{ sp.student.image.url }}" alt="{{ sp.student.name }}" class="profile-pic" />
+{% else %}
+  <img src="{% static 'images/default-profile.png' %}" alt="Default" class="profile-pic" />
+{% endif %}
+
+    </div>
+
+    <!-- Student Name -->
+    <div class="student-name">
+      {% if sp.student.user %}
+        {{ sp.student.user.first_name }} {{ sp.student.user.last_name }}
+      {% else %}
+        {{ sp.student.name|default:"Unnamed" }}
+      {% endif %}
+    </div>
+
+    <!-- Registration No -->
+    <div class="student-reg">
+      Reg No: {{ sp.student.reg_no|default:sp.student.reg_number|default:"N/A" }}
+    </div>
+
+    <!-- Semester -->
+    <div class="student-semester">
+      Semester: {{ sp.semester.title }}
+    </div>
+
+    <!-- Clickable Email -->
+    <div class="student-email">
+      {% if sp.student.user and sp.student.user.email %}
+        <a href="mailto:{{ sp.student.user.email }}">{{ sp.student.user.email }}</a>
+      {% elif sp.student.email %}
+        <a href="mailto:{{ sp.student.email }}">{{ sp.student.email }}</a>
+      {% else %}
+        No Email
+      {% endif %}
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+
+
+  </div>
+</main>
+
+<script src="{% static 'js/tmy-student.js' %}"></script>
+</body>
+</html>
+

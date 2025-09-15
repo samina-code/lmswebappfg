@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartLearning</title>
+
+  <!-- Static CSS File -->
+  <link rel="stylesheet" href="{% static 'css/Home.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+      <span class="brand-name">Smart Learning</span>
+    </div>
+    <ul>
+      <li><a href="{% url 'Home' %}">Home</a></li>
+      <li><a href="{% url 'SignIn' %}">login</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+    </ul>
+  </header>
+
+  <main class="hero-section">
+    <h1>Welcome to F.G Post Graduate College</h1>
+    <p>Learn and Implement</p>
+    <a href="{% url 'SignIn' %}">
+      <button class="btn">Get Started</button>
+    </a>
+  </main>
+
+  <footer>
+    <p>&copy; Design and  developed by samina ,fatima ,madeeha and kiran.</p>
+  </footer>
+
+  <!-- Static JS File -->
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

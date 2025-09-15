@@ -1,0 +1,259 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Teachers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/adminviewstudent.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    <span class="brand-name">Smart Learning</span>
+  </div>
+  <ul>
+    <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</header>
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="{% url 'admindashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{% url 'manage_students' %}"class="active"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+      <li><a href="{% url 'manageaddteacher' %}" ><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+      <li><a href="{% url 'manage_semesters' %}"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+    {% if messages %}
+  <div id="django-messages">
+    {% for message in messages %}
+      <div 
+        class="alert 
+               {% if message.tags == 'success' %}alert-success{% endif %}
+               {% if message.tags == 'error' %}alert-danger{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<script>
+  // 6 second (6000ms) baad hide
+  setTimeout(function() {
+    let msgBox = document.getElementById("django-messages");
+    if (msgBox) {
+      msgBox.style.display = "none";
+    }
+  }, 6000); // <-- 6000 = 6 seconds (10s ke liye 10000 kar do)
+</script>
+
+<style>
+  .alert-success {
+    color: green !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .alert-danger {
+    color: red !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+  /* Custom horizontal scrollbar for table (Chrome/Edge) */
+.table-responsive::-webkit-scrollbar {
+    height: 6px; /* horizontal scrollbar height */
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.05); /* light track color */
+    border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: rgba(40, 167, 69, 0.6); /* green matching active badge */
+    border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(40, 167, 69, 0.9); /* hover effect */
+}
+
+/* For Firefox */
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(40, 167, 69, 0.6) rgba(0, 0, 0, 0.05);
+}
+
+/* ===== Main Content Area ===== */
+.content {
+  margin-left: 230px;              /* sidebar ke liye jagah */
+  padding: 70px 20px 20px;         
+  width: calc(100% - 220px);
+  box-sizing: border-box;
+  margin-top: 60px;                
+}
+
+/* ===== Container (Compact) ===== */
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 15px;                   /* pehle 25px tha */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+#studentsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2px;
+  font-size: 11px; /* smaller text */
+}
+
+#studentsTable th,
+#studentsTable td {
+  padding: 6px 8px; /* less padding */
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+#studentsTable th {
+  background-color: #f5f5f5;
+  color: #003366;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+#studentsTable img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ===== Badge Style (smaller) ===== */
+.badge.active,
+.badge.inactive {
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ===== Action Buttons (smaller) ===== */
+.action-buttons {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn {
+  padding: 2px;
+  font-size: 12px;
+}
+
+.icon-btn i {
+  color: #003366;
+  font-size: 12px;
+}
+/* ===== Fix DataTables Header Overlap ===== */
+table.dataTable thead th {
+  position: relative;
+  padding-right: 20px !important; /* extra space for sort icon */
+  white-space: nowrap; /* prevent text wrapping */
+  font-size: 12px; /* small header text */
+}
+
+table.dataTable thead th.sorting:after,
+table.dataTable thead th.sorting_asc:after,
+table.dataTable thead th.sorting_desc:after {
+  right: 5px;   /* move arrow to the right */
+  position: absolute;
+}
+
+
+</style>
+
+  
+
+    <table id="studentsTable" class="display">
+      <thead>
+        <tr>
+          <th>Sr #</th>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Contact #</th>
+          <th>Father Details</th>
+          <th>Semester</th>
+          <th>Status</th>
+          <th>Action</th>
+        
+        </tr>
+      </thead>
+      <tbody>
+       {% for student in students %}
+<tr data-id="{{ student.id }}">
+  <td>{{ forloop.counter }}</td>
+  <td>
+    {% if student.image %}
+      <img src="{{ student.image.url }}" alt="{{ student.name }}" style="width:40px;height:40px;">
+    {% else %}
+      <img src="https://i.pravatar.cc/40?u={{ student.id }}" alt="default">
+    {% endif %}
+  </td>
+<td>{{ student.name }}</td>
+ 
+<td>{{ student.email }}</td>
+  <td>{{ student.contact }}</td>
+  <td>{{ student.father_name }}<br>{{ student.father_contact }}</td>
+<td>
+    {{ student.semester.name }}
+  <a href="{% url 'assign_semester' student.id %}" class="icon-btn" title="Assign Semester">
+    <i class="fas fa-calendar-alt"></i>
+  </a>
+</td>
+  <td>
+    <span class="badge {% if student.status == 'Active' %}active{% else %}inactive{% endif %}">
+      {{ student.status }}
+    </span>
+  </td>
+  <td>
+    <div class="action-buttons">
+      <a href="{% url 'update_student' student.id %}" class="icon-btn"><i class="fas fa-edit"></i></a>
+      <a href="{% url 'delete_student' student.id %}" class="icon-btn" onclick="return confirm('Delete this student?');"><i class="fas fa-trash-alt"></i></a>
+    </div>
+  </td>
+</tr>
+{% endfor %}       
+      </tbody>
+    </table>
+  </main>
+</div>
+
+<!-- JS Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'js/adminviewstudent.js' %}"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#studentsTable').DataTable();
+  });
+</script>
+
+</body>
+</html>

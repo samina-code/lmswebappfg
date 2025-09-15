@@ -1,0 +1,342 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Semesters</title>
+  <link rel="stylesheet" href="{% static 'css/mangesemester.css' %}" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    .messages {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: 500;
+    }
+    .messages .success {
+      background-color: #d4edda;
+      color: #155724;
+      border-left: 5px solid #28a745;
+    }
+    .messages .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border-left: 5px solid #dc3545;
+    }
+
+    .assign-btn {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 5px 10px;
+      background: #007bff;
+      color: white;
+      border-radius: 4px;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .assign-btn:hover {
+      background: #0056b3;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 400px;
+      position: relative;
+        overflow: hidden;
+    }
+    
+    .modal-content h3 {
+      margin-bottom: 15px;
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      cursor: pointer;
+      color: red;
+    }
+    .close:hover {
+      color: darkred;
+    }
+    ul.subject-list {
+      list-style: none;
+      padding: 0;
+    }
+    ul.subject-list li {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+    ul.subject-list li span {
+      font-size: 14px;
+    }
+    ul.subject-list button {
+      background: none;
+      border: none;
+      color: red;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    ul.subject-list button:hover {
+      color: darkred;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    <span class="brand-name">Smart Learning</span>
+  </div>
+  <ul>
+    <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</header>
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="{% url 'admindashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{% url 'manage_students' %}"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+      <li><a href="{% url 'manageaddteacher' %}"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+      <li><a href="{% url 'manage_semesters' %}" class="active"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <div class="card">
+      <div class="card-header">
+        <h3>Add New Semester</h3>
+      </div>
+      <div class="card-body">
+
+         {% if messages %}
+  <div id="django-messages">
+    {% for message in messages %}
+      <div 
+        class="alert 
+               {% if message.tags == 'success' %}alert-success{% endif %}
+               {% if message.tags == 'error' %}alert-danger{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<script>
+  // 6 second (6000ms) baad hide
+  setTimeout(function() {
+    let msgBox = document.getElementById("django-messages");
+    if (msgBox) {
+      msgBox.style.display = "none";
+    }
+  }, 6000); // <-- 6000 = 6 seconds (10s ke liye 10000 kar do)
+</script>
+
+<style>
+  .alert-success {
+    color: green !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .alert-danger {
+    color: red !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+</style>
+
+
+        <form method="post">
+          {% csrf_token %}
+          <label for="id_title">Semester Title:</label>
+          <select name="title" id="id_title"
+            style="width:100%;padding:12px 15px;font-size:15px;font-weight:500;
+                   border:2px solid #004aad;border-radius:8px;outline:none;cursor:pointer;
+                   margin-top:8px;transition:all 0.3s ease;appearance:none;
+                   background:#fff url('data:image/svg+xml;utf8,<svg fill=\'navy\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>') 
+                   no-repeat right 12px center;background-size:18px;">
+            <option value="">-- Select Semester --</option>
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4">Semester 4</option>
+            <option value="5">Semester 5</option>
+            <option value="6">Semester 6</option>
+            <option value="7">Semester 7</option>
+            <option value="8">Semester 8</option>
+          </select>
+
+          {% if form.title.errors %}
+            <p style="color: red; font-weight: bold; margin: 5px 0;">
+              {{ form.title.errors.0 }}
+            </p>
+          {% endif %}
+          <button type="submit" name="add_semester" id="addSemesterBtn">Add New Semester</button>
+        </form>
+
+        {% if semesters %}
+          <button id="viewAllBtn" onclick="toggleTable()">
+            <i class="fas fa-calendar-alt"></i> View All Semesters
+          </button>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if semesters %}
+    <div id="semesterTableSection">
+      <h3>All Semesters</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Sr #</th>
+            <th>Semester Title</th>
+            <th>Subjects</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="semesterTableBody">
+          {% for semester in semesters %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ semester.title }}</td>
+            <td>
+              <ul>
+                {% for subject in semester.subjects.all %}
+                  <li>{{ subject.title }} ({{ subject.code }})</li>
+                {% empty %}
+                  <li>No subjects assigned</li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td>
+              <!-- Open Modal Button -->
+              <button class="assign-btn" onclick="openModal('{{ semester.id }}')">
+                <i class="fas fa-plus-circle"></i> Manage Subjects
+              </button>
+            </td>
+          </tr>
+
+          <!-- Modal for Adding & Managing Subjects -->
+          <div id="modal-{{ semester.id }}" class="modal">
+            <div class="modal-content">
+        <span class="close" onclick="console.log('close clicked'); closeModal('{{ semester.id }}')">&times;</span>
+
+              <h3>Manage {{ semester.title }} Subjects</h3>
+
+              <!-- Add Subject Form -->
+              
+               
+                      
+                       <form method="POST">
+  {% csrf_token %}
+  {{ subject_form.non_field_errors }}
+  
+  <div>
+    {{ subject_form.title.label_tag }}
+    {{ subject_form.title }}
+    {% if subject_form.title.errors %}
+      <p style="color:red;">{{ subject_form.title.errors.0 }}</p>
+    {% endif %}
+  </div>
+
+  <div>
+    {{ subject_form.code.label_tag }}
+    {{ subject_form.code }}
+    {% if subject_form.code.errors %}
+      <p style="color:red;">{{ subject_form.code.errors.0 }}</p>
+    {% endif %}
+  </div>
+ 
+                <input type="hidden" name="semester_id" value="{{ semester.id }}">
+                <button type="submit" name="add_subject"
+                        style="background:#007bff;color:white;padding:10px 15px;border:none;border-radius:5px;cursor:pointer;">
+                  Add New Subject
+                </button>
+              </form>
+
+              <!-- Subjects List -->
+              <h4 style="margin-top:15px;">All Subjects</h4>
+              <ul class="subject-list">
+                {% for subject in semester.subjects.all %}
+               
+                  <li>
+                    <span>{{ forloop.counter }}. {{ subject.title }} ({{ subject.code }})</span>
+                    <form method="POST" style="display:inline;">
+                      {% csrf_token %}
+                      <input type="hidden" name="subject_id" value="{{ subject.id }}">
+                      <input type="hidden" name="semester_id" value="{{ semester.id }}">
+                      <button type="submit" name="delete_subject"><i class="fas fa-trash"></i></button>
+                    </form>
+                  </li>
+                {% empty %}
+                  <li>No subjects added yet.</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  function toggleTable() {
+    const tableSection = document.getElementById("semesterTableSection");
+    tableSection.classList.toggle("hidden");
+  }
+
+  function openModal(id) {
+    document.getElementById("modal-" + id).style.display = "block";
+  }
+  function closeModal(id) {
+    document.getElementById("modal-" + id).style.display = "none";
+  }
+  // Close modal if clicked outside
+  window.onclick = function(event) {
+    const modals = document.getElementsByClassName("modal");
+    for (let i = 0; i < modals.length; i++) {
+      if (event.target == modals[i]) {
+        modals[i].style.display = "none";
+      }
+      document.querySelectorAll(".close").forEach(btn => {
+  btn.addEventListener("click", function() {
+    this.closest(".modal").style.display = "none";
+  });
+});
+
+    }
+  }
+</script>
+
+<script src="{% static 'js/managesemester.js' %}"></script>
+</body>
+</html>

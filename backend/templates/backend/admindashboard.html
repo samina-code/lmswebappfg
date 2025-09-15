@@ -1,0 +1,260 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard | SmartLearning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'css/admin/admindashboard.css' %}" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+<style>
+ /* Wrapper for icons */
+.top-actions {
+  display: flex;
+  align-items: center;   /* icons same line par center */
+  gap: 10px;             /* thoda gap between email & moon */
+}
+
+/* Email button styling */
+.email-btn {
+  width: 30px;
+  height: 30px;
+  background: #003366;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #fff;
+}
+
+/* Dark mode button styling */
+#darkModeToggle {
+  width: 30px;
+  height: 30px;
+  background: #003366;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+#darkModeToggle i {
+  font-size: 18px;
+  color: #fff;
+}
+/* container for the icon */
+.message-icon {
+  position: relative;
+  display: inline-block;
+  font-size: 32px;        /* change icon size if needed */
+  color: #003366;         /* icon color */
+  line-height: 1;
+  overflow: visible;      /* ensure badge is visible even if parent had overflow hidden */
+}
+
+/* the red circular badge */
+.message-icon .badge-notify {
+  position: absolute;
+  top: -6px;              /* tweak to align perfectly */
+  right: -6px;            /* tweak to align perfectly */
+  min-width: 18px;        /* keeps it circular for small numbers */
+  height: 18px;
+  padding: 0 5px;         /* horizontal padding for 2-digit numbers */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e53935;    /* red */
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;   /* pill/circle */
+  line-height: 1;
+  box-shadow: 0 0 0 2px white; /* small white outline so it stands out on dark header */
+  z-index: 1000;          /* ensure it is on top */
+  transform: translate(0, 0); /* neutralize bootstrap translate if present */
+}
+
+/* optional: tiny dot style if you want just a dot for 1 unread */
+
+.message-icon .badge-dot {
+  width: 10px;
+  height: 10px;
+  min-width: 0;
+  padding: 0;
+}
+
+
+
+</style>
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+      <span class="brand-name">Smart Learning</span>
+    </div>
+    <ul>
+      <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </header>
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Admin Panel</h2>
+      <ul>
+        <li><a href="{% url 'admindashboard' %}" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="{% url 'manage_students' %}"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+        <li><a href="{% url 'manageaddteacher' %}"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+        <li><a href="{% url 'manage_semesters' %}"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <!-- Admin Tools -->
+      <div class="admin-tools">
+         <h2>Welcome, {{ user.username }}!</h2>
+        <div class="tools">
+          <div class="top-actions">
+          <input type="text" class="search-input" placeholder="Search..." />
+         
+<!-- put this where your icon is -->
+<a href="{% url 'open_messages' %}" class="message-icon" aria-label="Messages">
+  <i class="fas fa-envelope"></i>
+
+  {% if unread_count and unread_count > 0 %}
+    <span class="badge-notify">
+      {% if unread_count > 99 %}99+{% else %}{{ unread_count }}{% endif %}
+    </span>
+  {% endif %}
+</a>
+
+          <button id="darkModeToggle"><i class="fas fa-moon"></i></button>
+          <!-- Email Box with Badge -->
+</div>
+        </div>
+      </div>
+
+
+      <!-- Overview Cards -->
+      <section class="overview">
+        <div class="card">Total Students: <strong>{{ total_students }}</strong></div>
+        <div class="card">Total Teachers: <strong>{{ total_teachers }}</strong></div>
+        <div class="card">Total Semesters: <strong>{{ total_semesters }}</strong></div>
+      </section>
+
+      <!-- Charts Section -->
+      <section class="chart-section">
+        <h3><i class="fa-solid fa-chart-bar"></i>
+ Data Overview</h3>
+        <div class="chart-container">
+          
+          <div class="chart-box">
+            <h4>Teachers by Semester</h4>
+            <canvas id="teacherChart"></canvas>
+          </div>
+          <div class="chart-box">
+            <h4>Semester Activity</h4>
+            <canvas id="semesterChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Activity Log -->
+      <section class="log-section">
+        <h3>Recent Admin Activity</h3>
+        {% if messages %}
+        <ul>
+          {% for msg in messages %}
+            <li>{{ msg }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        <ul>
+          {% for activity in recent_activities %}
+            <li>📌 {{ activity }}</li>
+          {% empty %}
+            <li>No recent activities</li>
+          {% endfor %}
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Global chart instances
+    const chartInstances = {};
+
+    // Function to load chart
+    async function loadChartData(apiUrl, canvasId, chartType, labelText, colors) {
+      try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        const ctx = document.getElementById(canvasId).getContext("2d");
+
+        if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+        chartInstances[canvasId] = new Chart(ctx, {
+          type: chartType,
+          data: {
+            labels: data.labels,
+            datasets: [{
+              label: labelText,
+              data: data.data,
+              backgroundColor: Array.isArray(colors) ? colors : [colors],
+              borderColor: Array.isArray(colors) ? colors : [colors],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: "bottom" } },
+            scales: {
+              y: { beginAtZero: true }
+            }
+          }
+        });
+      } catch (err) {
+        console.error(`Chart load error (${canvasId}):`, err);
+      }
+    }
+
+    // Dark Mode Toggle
+    const toggleBtn = document.getElementById("darkModeToggle");
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      const icon = toggleBtn.querySelector("i");
+      if (document.body.classList.contains("dark-mode")) {
+        icon.classList.replace("fa-moon", "fa-sun");
+      } else {
+        icon.classList.replace("fa-sun", "fa-moon");
+      }
+      localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+    });
+
+    // Load saved theme
+    window.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
+        toggleBtn.querySelector("i").classList.replace("fa-moon", "fa-sun");
+      }
+    });
+
+    // Load Charts with Bar Chart Theme
+   
+    const barColor = "rgba(9, 32, 238, 0.6)"; // same color for all bars
+    loadChartData("/api/chart/students/", "studentChart", "bar", "Students", barColor);
+    loadChartData("/api/chart/teachers/", "teacherChart", "bar", "Teachers", barColor);
+    loadChartData("/api/chart/activity/", "semesterChart", "line", "Subjects", "rgba(12, 43, 243, 0.6)");
+  </script>
+</body>
+</html>

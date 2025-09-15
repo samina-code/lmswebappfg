@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update Student</title>
+  <link rel="stylesheet" href="{% static 'css/adminupdatestudent.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <style>
+     .view-btn {
+    background-color: #1a1aff;
+    color: white;
+    padding: 6px 10px;
+    text-decoration: none;
+    font-size: 13px;
+    border-radius: 4px;
+    position: relative;   /* relative rakho taake parent ke andar rahe */
+    left: -5px;           /* thoda left shift (negative value = andar ki taraf) */
+}
+
+  
+</style>
+<!-- 🔷 Header -->
+<header>
+  <div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    <span class="brand-name">Smart Learning</span>
+  </div>
+  <ul>
+    <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</header>
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="{% url 'admindashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{% url 'manage_students' %}" class="active"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+      <li><a href="{% url 'manageaddteacher' %}"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+      <li><a href="{% url 'manage_semesters' %}"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">  
+ <div class="container">
+      <div class="header">
+        <h2>Update Student - {{ student.name }}</h2>
+        <!-- adminviewstudent.html -->
+        <a href="{% url 'view_students' %}" class="view-btn"><i class="fas fa-users"></i> View All Students</a>
+      </div>
+   <!-- Messages (success/error) -->
+         {% if messages %}
+  <div id="django-messages">
+    {% for message in messages %}
+      <div 
+        class="alert 
+               {% if message.tags == 'success' %}alert-success{% endif %}
+               {% if message.tags == 'error' %}alert-danger{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<script>
+  // 6 second (6000ms) baad hide
+  setTimeout(function() {
+    let msgBox = document.getElementById("django-messages");
+    if (msgBox) {
+      msgBox.style.display = "none";
+    }
+  }, 6000); // <-- 6000 = 6 seconds (10s ke liye 10000 kar do)
+</script>
+
+<style>
+  .alert-success {
+    color: green !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .alert-danger {
+    color: red !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+</style>
+
+      <!-- Django Form -->
+      <form method="post" enctype="multipart/form-data" class="form-box" onsubmit="return confirmUpdate()">
+        {% csrf_token %}
+        
+        <div class="form-row">
+          <label>Student Name</label>
+          {{ form.name }}
+        </div>
+
+        <div class="form-row">
+          <label>Student Contact #</label>
+          {{ form.contact }}
+        </div>
+
+        <div class="form-row">
+          <label>Student Email</label>
+          {{ form.email }}
+        </div>
+
+        <div class="form-row">
+          <label>Student Reg #</label>
+             {{ form.reg_number }}
+        </div>
+
+        <div class="form-row">
+          <label>Student Father Name</label>
+          {{ form.father_name }}
+        </div>
+
+        <div class="form-row">
+          <label>Student Father Contact</label>
+          {{ form.father_contact }}
+        </div>
+
+        <div class="form-row">
+          <label>Student Image</label>
+          {{ form.image }}
+        </div>
+
+        <button type="submit" class="submit-btn">Update Student</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- JavaScript Confirmation -->
+<script>
+  function confirmUpdate() {
+    return confirm("Are you sure you want to update this student’s details?");
+  }
+</script>
+
+<script src="{% static 'js/adminupdatestudent.js' %}"></script>
+</body>
+</html>

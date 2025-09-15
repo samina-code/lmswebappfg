@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teacher Settings - SmartLearning</title>
+  <link rel="stylesheet" href="css/teacher/setting.css"/>
+   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+ <!-- SmartLearning Header -->
+<header class="dashboard-header">
+  <div class="logo-container">
+    <img src="logo.png" alt="SmartLearning " class="logo-img" />
+    <h1>SmartLearning</h1>
+  </div>
+  <ul>
+    <li><a href="SignIn.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+
+</header>
+
+  <!-- Settings Panel -->
+  <main class="settings-container">
+    <h2>Teacher Settings</h2>
+
+    <!-- Profile Picture -->
+    <section class="settings-section">
+      <h3><i class="fas fa-user-circle"></i> Profile</h3>
+      <label for="uploadPic">
+        <img src="https://randomuser.me/api/portraits/men/30.jpg" class="profile-pic" id="profilePreview" />
+      </label>
+      <input type="file" id="uploadPic" accept="image/*" style="display: none;" />
+      <p>Click image to upload new profile picture</p>
+      <button onclick="location.href='teditprofile.html'">Edit Profile</button>
+    </section>
+
+    <!-- Security -->
+    <section class="settings-section">
+      <h3><i class="fas fa-lock"></i> Security</h3>
+      <button onclick="location.href='tchangepassword.html'">Change Password</button>
+      <label><input type="checkbox" checked /> Enable Two-Factor Authentication</label>
+    </section>
+
+    <!-- Notifications -->
+    <section class="settings-section">
+      <h3><i class="fas fa-bell"></i> Notifications</h3>
+      <label><input type="checkbox" checked /> Email Alerts</label>
+      <label><input type="checkbox" /> System Notifications</label>
+    </section>
+
+    <!-- Preferences -->
+    <section class="settings-section">
+      <h3><i class="fas fa-cogs"></i> Preferences</h3>
+      <label>Language:
+        <select>
+          <option>English</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="darkModeToggle" /> Enable Dark Mode</label>
+    </section>
+
+    <!-- Download -->
+    <section class="settings-section">
+      <h3><i class="fas fa-file-download"></i> Download</h3>
+      <button>Download Profile PDF</button>
+    </section>
+
+    <!-- Account -->
+    <section class="settings-section">
+      <h3><i class="fas fa-sign-out-alt"></i> Account</h3>
+      <button> Logout</button>
+    </section>
+  </main>
+
+  <script src="teachersetting.js"></script>
+</body>
+</html>

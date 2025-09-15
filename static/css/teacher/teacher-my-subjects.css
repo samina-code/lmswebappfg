@@ -1,0 +1,230 @@
+/* Smart Header */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.main-header {
+  background-color: #003366;
+  color: white;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 60px;
+  padding-right: 20px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.brand-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logout-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 5px 10px;
+  margin-right: 20px;
+}
+
+.logout-link:hover {
+  text-decoration: underline;
+}
+
+.sidebar {
+  width: 230px;
+  height: calc(100vh - 60px);
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px 20px;
+  margin: 10px 15px;
+  text-decoration: none;
+  font-size: 12px;
+  background-color: #003366;
+  border-radius: 6px;
+  color: white;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar a:hover {
+  background-color: #0066CC;
+  transform: translateX(5px);
+}
+
+.sidebar i {
+  margin-right: 10px;
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+.sidebar a.active {
+  background-color: white;
+  color: #003366;
+  font-weight: bold;
+  border-left: 4px solid #ffcc00;
+}
+
+.sidebar a.active:hover {
+  background-color: #e6e6e6;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 80px auto 30px 230px;
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+}
+
+.search-area {
+  padding: 20px 30px;
+  background-color: #ffffff;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.search-area input,
+.search-area select {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+#subjectContainer {
+  padding: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+/*  Subject Cards */
+.subject-card {
+  background: white;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.subject-card h3 {
+  color: #003366;
+  margin-bottom: 10px;
+}
+
+.teacher-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.teacher-photo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #003366;
+}
+
+/*  Lectures */
+.lecture-section {
+  margin-top: 15px;
+}
+
+.lecture-section h4 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.lecture-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lecture-list li {
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+
+.lecture-list a {
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.lecture-list a:hover {
+  text-decoration: underline;
+}
+
+/*  Feedback */
+.lecture-list textarea {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.feedback-btn {
+  margin-top: 6px;
+  background-color: #003366;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.feedback-btn:hover {
+  background-color: #00509e;
+}

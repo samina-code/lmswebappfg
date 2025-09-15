@@ -1,0 +1,214 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: white;
+  }
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #003366;
+    padding: 15px 30px;
+    height: 60px;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 50px;
+    width: 50px;
+    margin-right: 15px;
+    border-radius: 50%;
+    background: white;
+    object-fit: cover;
+  }
+  
+  .brand-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+  }
+  
+  header ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  header ul li a {
+    text-decoration: none;
+    color: #e8eaed;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  
+  header ul li a:hover {
+    color: #ffcc00;
+  }
+  
+  
+  
+  /* ===== Fixed Sidebar ===== */
+  .sidebar {
+    position: fixed;
+    top: 80px; /* Below fixed header */
+    left: 0;
+    width: 200px;
+    height: calc(100% - 60px);
+    background: #0066CC;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .sidebar h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 18px;
+    color: #fff;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    margin-bottom: 15px;
+  }
+  
+  .sidebar ul li a {
+    display: block;
+    padding: 10px 15px;
+    background: #003366;
+    font-size: 13px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .sidebar ul li a:hover {
+    background: #0055aa;
+    transform: translateX(5px);
+  }
+  
+  .sidebar a.active {
+    background-color: white;
+    color: #003366;
+    font-weight: bold;
+    border-left: 4px solid #ffcc00;
+  }
+  
+  .sidebar a.active:hover {
+    background-color: #e6e6e6;
+  }
+  
+/* ===== Main Content ===== */
+.content {
+  width: 1000px;
+  margin-left: 230px;
+  padding: 80px 30px 30px;
+  width: calc(100% - 230px);
+  box-sizing: border-box;
+}
+/* Main card */
+
+  
+  .assign-container {
+    width: 80%;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+  
+  .assign-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+  
+  .assign-header h3 {
+    margin: 0;
+    font-weight: bold;
+    color:  #003366;
+    font-size: 30pxpx;
+  }
+  
+  .view-all-btn{
+    background: linear-gradient(135deg, #0d6efd, #004dcf);
+    color: white;
+    padding: 12px 28px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+  }
+  
+  .view-all-btn :hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #094bb7, #003caa);
+    box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4);
+  }
+  
+  
+  .form-group {
+    margin-bottom: 25px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #000;
+    border-radius: 5px;
+  }
+  
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 5px;
+    color: #000;
+  }
+  
+  .btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  
+  .assign-btn {
+    background: linear-gradient(135deg, #0d6efd, #004dcf);
+    color: white;
+    padding: 12px 28px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+  }
+  
+  .assign-btn :hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #094bb7, #003caa);
+    box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4);
+  }
+  

@@ -1,0 +1,223 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: #f9f9f9;
+  padding: 0;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #eee;
+}
+
+.dashboard-header {
+  background: #003366;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 600;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-img {
+  height: 50px;
+  /* Adjust the size to make it bigger */
+  width: 50px;
+  /* Ensure the width is equal to height for a perfect circle */
+  border-radius: 50%;
+  /* This makes the logo circular */
+  object-fit: cover;
+  /* Ensures the logo scales properly */
+}
+
+header ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+header ul li a {
+  text-decoration: none;
+  color: #e8eaed;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+header ul li a:hover {
+  color: #ffcc00;
+}
+
+.sidebar {
+  width: 230px;
+  height: calc(100vh - 60px);
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px 20px;
+  margin: 10px 15px;
+  text-decoration: none;
+  font-size: 12px;
+  background-color: #003366;
+  border-radius: 6px;
+  color: white;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar a:hover {
+  background-color: #0066CC;
+  transform: translateX(5px);
+}
+
+.sidebar i {
+  margin-right: 10px;
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+.sidebar a.active {
+  background-color: white;
+  color: #003366;
+  font-weight: bold;
+  border-left: 4px solid #ffcc00;
+}
+
+.sidebar a {
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar a.active:hover {
+  background-color: #e6e6e6;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 90px 20px 30px 250px;
+  /* Top | Right | Bottom | Left */
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+}
+
+.subject-block {
+  margin-bottom: 30px;
+}
+
+.subject-block h3 {
+  color: #003366;
+  margin-bottom: 10px;
+}
+
+.quiz-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.quiz-table th,
+.quiz-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.quiz-table th {
+  background-color: #eee;
+}
+
+.quiz-table td .status {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status.not-attempted {
+  background-color: #ffecb3;
+  color: #b36b00;
+}
+
+.status.in-progress {
+  background-color: #bbdefb;
+  color: #0d47a1;
+}
+
+.status.submitted {
+  background-color: #c8e6c9;
+  color: #256029;
+}
+
+button.quiz-btn {
+  padding: 6px 12px;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button.quiz-btn:hover {
+  background-color: #003060;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+.hidden {
+  display: none;
+}

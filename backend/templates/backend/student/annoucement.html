@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Announcements</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="{% static 'css/student/announcement.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+   
+/* Fixed Sidebar below header */
+.sidebar {
+  width: 238px;
+  height: calc(100vh - 60px); /* 60px = header height */
+  position: fixed;
+  top: 60px; 
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;      /* enables vertical scroll */
+  box-sizing: border-box; /* include padding in height calculation */
+  scrollbar-width: thin;  /* Firefox thin scrollbar */
+}
+
+/* Optional: Custom scrollbar for Chrome/Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+    main.announcement-container {
+      margin-left: 240px;
+      padding: 50px;
+    max-width: 850px;
+  margin-left: 270px; /* 230px sidebar + 20px gap */
+  padding-top: 85px;  /* 60px header + 20px gap */
+  background: white;
+  border-radius: 8px;
+  margin-top: 30px;
+ 
+
+    }
+
+    .announcement-container h2 {
+      margin-bottom: 20px;
+      color: #003366;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .controls input,
+    .controls select {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .announcement-card {
+      background: white;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      transition: 0.3s;
+    }
+
+    .announcement-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .announcement-card h3 {
+      margin: 0;
+      color: #0d6efd;
+      font-size: 18px;
+    }
+
+    .announcement-meta {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #555;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mark-read {
+      background: #0d6efd;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: 0.3s;
+    }
+
+    .mark-read:hover {
+      background: #084298;
+    }
+     .mark-read.read {
+      background: #28a745;
+      cursor: default;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="logo-container">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+      <span class="brand-name">Smart Learning</span>
+    </div>
+    <ul>
+      <li><a href="{% url 'SignIn' %}" style="color:white;text-decoration:none;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </header>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>Student Panel</h2>
+    <a href="{% url 'student_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{% url 'my_sem' %}"><i class="bi bi-journal-text"></i> My Semester</a>
+    <a href="{% url 'subjects' %}"><i class="bi bi-folder2-open"></i> My Subjects</a>
+    <a href="{% url 'upload_assignment' %}"><i class="bi bi-cloud-upload"></i> Upload Assignment</a>
+    <a href="{% url 'my_quiz' %}"><i class="bi bi-check2-square"></i> My Quizzes</a>
+    <a href="{% url 'teacherperformance' %}"><i class="bi bi-graph-up"></i> My Performance</a>
+    <a href="{% url 'feedback' %}"><i class="bi bi-chat-square-dots"></i> Submit Feedback</a>
+    <a href="{% url 'announcement' %}" class="active"><i class="bi bi-megaphone"></i> Announcements</a>
+  </div>
+
+  <!-- MAIN -->
+  <main class="announcement-container">
+    <h2>Announcements</h2>
+
+    <div class="controls">
+      <input type="text" id="searchAnnouncement" placeholder="Search announcements..." />
+      <select id="filterCategory">
+        <option value="all">All</option>
+        <option value="exam">Exams</option>
+        <option value="assignment">Assignments</option>
+        <option value="general">General</option>
+      </select>
+    </div>
+
+   <div id="announcementList">
+  {% for ann in announcements %}
+  <div class="announcement-card" data-category="{{ ann.category }}">
+    <h3>{{ ann.type }}</h3>
+    <h4>{{ ann.title }}</h4>
+    <div class="announcement-meta">
+      <span>
+        🗓️ {{ ann.date_posted|date:"Y-m-d" }} — 👨‍🏫
+        {% if ann.teacher %}
+          {{ ann.teacher.name }}
+        {% elif ann.posted_by %}
+          {{ ann.posted_by.get_full_name }}
+        {% else %}
+          Unknown
+        {% endif %}
+      </span>
+      <button class="mark-read">Mark as Read</button>
+    </div>
+  </div>
+  {% empty %}
+  <p>No announcements available.</p>
+  {% endfor %}
+</div>
+
+  
+
+  </main>
+   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const buttons = document.querySelectorAll(".mark-read");
+      buttons.forEach(btn => {
+        btn.addEventListener("click", function () {
+          if (!btn.classList.contains("read")) {
+            btn.classList.add("read");
+            btn.innerHTML = "✔️ Read";
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

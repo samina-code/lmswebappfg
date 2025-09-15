@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Profile</title>
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'profile.css' %}" />
+</head>
+
+<body>
+
+  <header class="main-header">
+    <div class="logo-section">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="logo" alt="Logo">
+      <span class="brand-name">SmartLearning</span>
+    </div>
+  </header>
+
+  <div class="profile-container">
+    <div class="profile-card">
+      <!-- Profile Picture -->
+      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile Picture" class="profile-pic">
+
+      <!-- Student Information (Static Example, later dynamic hoga) -->
+      <h2>{{ student.name|default:"Ahmed Raza" }}</h2>
+      <p><strong>Student ID:</strong> {{ student.student_id|default:"SL-2024-001" }}</p>
+      <p><strong>Email:</strong> {{ student.email|default:"ahmedraza@gmail.com" }}</p>
+      <p><strong>Semester:</strong> {{ student.semester|default:"6" }}</p>
+      <p><strong>Department:</strong> {{ student.department|default:"Computer Science" }}</p>
+      <p><strong>Subjects:</strong> {{ student.subjects|default:"AI, Web Dev, Data Science" }}</p>
+      <p><strong>Join Date:</strong> {{ student.join_date|default:"August 15, 2022" }}</p>
+
+      <!-- Download Profile Button -->
+      <button onclick="downloadProfilePDF()">Download Profile</button>
+    </div>
+  </div>
+
+  <!-- JS Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="{% static 'profile.js' %}"></script>
+</body>
+
+</html>

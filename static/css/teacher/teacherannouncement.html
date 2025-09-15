@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Announcements - SmartLearning</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="teacherannouncement.css">
+</head>
+<body>
+
+  <!--  Header -->
+  <header class="main-header">
+    <div class="logo-section">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="logo" />
+      <span class="brand-name">SmartLearning</span>
+    </div>
+    
+    <nav class="nav-links">
+      <a href="login.html" class="logout-link">Logout</a>
+    </nav>
+  </header>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Teacher Panel</h2>
+    <a href="teacherdashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="teacher-my-subjects.html"><i class="fas fa-book"></i> My Subjects</a>
+    <a href="my-students.html"><i class="fas fa-user-graduate"></i> My Students</a>
+    <a href="upload-material.html"><i class="fas fa-upload"></i> Upload Material</a>
+    <a href="quiz-creator.html"><i class="fas fa-question-circle"></i> Quiz Creator</a>
+    <a href="updateperformance.html"><i class="fas fa-chart-line"></i> Update Performance</a>
+    <a href="teacherannouncement.html"class="active"><i class="fas fa-bullhorn"></i> Announcements</a>
+  </div>
+
+
+  <!--  Announcement Form -->
+  <main class="announcement-container">
+    <h2>Create Announcement</h2>
+
+    <form id="announcementForm">
+      <label>Select Semester:</label>
+      <select id="semesterSelect" required>
+        <option value="">--Select Semester--</option>
+        <option>2th</option>
+        <option>4th</option>
+        <option>6th</option>
+        <option>8th</option>
+      </select>
+      <label>Select Subject:</label>
+      <select id="subjectSelect" required>
+        <option value="">--Select Subject--</option>
+        <option>Web Development</option>
+        <option>Artificial Intelligence</option>
+        <option>Data Structures</option>
+      </select>
+
+      <label>Announcement Type:</label>
+      <select id="typeSelect" required>
+        <option value="">--Select Type--</option>
+        <option>Quiz</option>
+        <option>Assignment</option>
+        <option>Midterm</option>
+        <option>Final</option>
+        <option>Other</option>
+      </select>
+
+      <label>Title:</label>
+      <input type="text" id="titleInput" placeholder="e.g. Final Quiz Schedule" required>
+
+      <label>Description:</label>
+      <textarea id="descriptionInput" placeholder="Write details here..." required></textarea>
+
+      <label>Announcement Date:</label>
+      <input type="date" id="dateInput">
+
+      <button type="submit">📣 Post Announcement</button>
+    </form>
+
+    <!--  Posted Announcements -->
+    <section class="recent-announcements">
+      <h3>Recent Announcements</h3>
+      <div id="announcementList"></div>
+    </section>
+  </main>
+
+  <script src="teacherannouncement.js"></script>
+</body>
+</html>

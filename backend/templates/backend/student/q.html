@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Quiz</title>
+    <link rel="stylesheet" href="{% static 'css/q.css' %}" />
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body> <!-- Header -->
+    <header> <img src="https://img.icons8.com/color/48/000000/graduation-cap.png" alt="Logo">
+        <h1>SmartLearning</h1>
+    </header>
+    <div class="container">
+        <h2>My Quiz</h2> {% for subject, quizzes in quizzes_by_subject.items %} <h3>{{ subject }}</h3>
+        <table>
+            <tr>
+                <th>Quiz Title</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr> {% for quiz in quizzes %} <tr>
+                <td>{{ quiz.title }}</td>
+                <td>{{ quiz.due_date }}</td>
+                <td> <span class="status {{ quiz.status|lower }}"> {{ quiz.status }} </span> </td>
+                <td> {% if quiz.status == "Not Attempted" %} <button class="btn">Start Quiz</button> {% elif quiz.status
+                    == "In Progress" %} <button class="btn">Continue</button> {% else %} <button class="btn"
+                        onclick="openResultModal('{{ quiz.title }}','{{ quiz.score }}')">View Result</button> {% endif
+                    %} </td>
+            </tr> {% endfor %}
+        </table> {% endfor %}
+    </div> <!-- Result Modal -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content"> <span class="close-btn" onclick="closeResultModal()">&times;</span>
+            <h2>Quiz Result: <span id="quizTitle"></span></h2>
+            <p><strong>Score:</strong> <span id="quizScore"></span></p>
+            <ul id="questionResults"> <!-- JS se dynamically fill hoga --> </ul> <button onclick="downloadResultPDF()"
+                class="download-btn">Download as PDF</button>
+        </div>
+    </div>
+    <script src="{% static 'js/q.js' %}"></script>
+</body>
+
+</html>

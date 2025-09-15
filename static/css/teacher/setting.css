@@ -1,0 +1,118 @@
+ body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background: #f9f9f9;
+    padding: 0;
+  }
+  
+  .dashboard-header {
+    background: #003366;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 600;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .logo-img {
+   
+      height: 50px; /* Adjust the size to make it bigger */
+      width: 50px;  /* Ensure the width is equal to height for a perfect circle */
+      border-radius: 50%; /* This makes the logo circular */
+      object-fit: cover; /* Ensures the logo scales properly */
+  }
+  
+  
+  
+  header ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  
+  header ul li a {
+    text-decoration: none;
+    color: #e8eaed;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  
+  header ul li a:hover {
+    color: #ffcc00;
+  }
+  
+    
+  .settings-container {
+    max-width: 750px;
+    margin: 30px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  h2 {
+    color: #003366;
+    margin-bottom: 25px;
+  }
+  
+  .settings-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  
+  .settings-section h3 {
+    color: #003366;
+    margin-bottom: 15px;
+  }
+  
+  .settings-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  
+  .settings-section input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .settings-section button {
+    padding: 10px 16px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .settings-section button:hover {
+    background-color: #002a5c;
+  }
+  
+  .profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #003366;
+    object-fit: cover;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 10px;
+  }
+  

@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assign Subject</title>
+  <link rel="stylesheet" href="{% static 'css/manageassignsubject.css' %}" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Inline Styling for Inputs -->
+  <style>
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s ease-in-out;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+    }
+
+   
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    <span class="brand-name">Smart Learning</span>
+  </div>
+  <ul>
+    <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</header>
+    
+<div class="dashboard-container">
+  <!--Sidebar -->
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="{% url 'admindashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{% url 'manage_students' %}"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+      <li><a href="{% url 'manageaddteacher' %}" class="active"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+      <li><a href="{% url 'manage_semesters' %}"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="assign-container">
+      <div class="assign-header">
+        <h3>Assign Subject</h3>
+        <a href="{% url 'teacher_subjects' teacher.id %}" class="view-all-btn">
+          <i class="fas fa-chalkboard-teacher"></i> View All {{ teacher.name }} Subjects
+        </a>
+      </div>
+
+      <form method="POST">
+        {% csrf_token %}
+        {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+              <p 
+                {% if message.tags == 'success' %} style="color: green; font-weight: bold;" {% endif %}
+                {% if message.tags == 'error' %} style="color: red; font-weight: bold;" {% endif %}
+              >
+                {{ message }}
+              </p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="form-group">
+          <label for="semester">Semester</label>
+          <select id="semester" name="semester" required>
+            <option value="">Select Semester</option>
+            {% for sem in semesters %}
+              <option value="{{ sem.id }}">{{ sem.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject" required>
+            <option value="">Select Subject</option>
+            {% for sub in subjects %}
+              <option value="{{ sub.id }}">{{ sub.title }} ({{ sub.code }})</option>
+            {% endfor %}
+          </select>
+        </div>
+
+       
+       <!--New Field: Class Days -->
+<div class="form-group">
+  <label for="class_days">Class Days</label>
+  <input type="text" id="class_days" name="class_days" placeholder="e.g. Mon-Wed-Fri" required>
+</div>
+
+<!-- New Field: Timing (Backend ke saath match karega) -->
+<div class="form-group">
+  <label for="schedule">schedule</label>
+  <input type="text" id="schedule" name="schedule" placeholder="e.g. 10:00 AM - 11:00 AM" required>
+</div>
+
+
+        <button type="submit" class="assign-btn">Assign Subject to Teacher</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const semesterSelect = document.getElementById('semester');
+    const subjectSelect = document.getElementById('subject');
+
+    semesterSelect.addEventListener('change', function() {
+        const semesterId = this.value;
+        subjectSelect.innerHTML = '<option value="">Loading...</option>';
+
+        if (semesterId) {
+            fetch(`/ajax/get-subjects/?semester_id=${semesterId}`)
+                .then(response => response.json())
+                .then(data => {
+                    subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+                    data.subjects.forEach(sub => {
+                        const option = document.createElement('option');
+                        option.value = sub.id;
+                        option.text = `${sub.title} (${sub.code})`;
+                        subjectSelect.appendChild(option);
+                    });
+                });
+        } else {
+            subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+        }
+    });
+});
+</script>
+
+<script src="{% static 'js/manageassignsubject.js' %}"></script>
+</body>
+</html>

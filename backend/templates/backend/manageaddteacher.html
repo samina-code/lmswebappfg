@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Teacher</title>
+  <link rel="stylesheet" href="{% static 'css/manageaddteacher.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo-container">
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+    <span class="brand-name">Smart Learning</span>
+  </div>
+  <ul>
+    <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+  </ul>
+</header>
+
+<div class="dashboard-container">
+  <!--Sidebar -->
+  <aside class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="{% url 'admindashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="{% url 'manage_students' %}"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+      <li><a href="{% url 'manageaddteacher' %}" class="active"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+      <li><a href="{% url 'manage_semesters' %}"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="teacher-container">
+      <div class="top-bar">
+        <h2>Add New Teacher</h2>
+        <a href="{% url 'view_teachers' %}" class="btn-view"><i class="fas fa-users"></i> View All Teachers</a>
+      </div>
+
+      <!-- Single Form -->
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Messages (success/error) -->
+          {% if messages %}
+  <div id="django-messages">
+    {% for message in messages %}
+      <div 
+        class="alert 
+               {% if message.tags == 'success' %}alert-success{% endif %}
+               {% if message.tags == 'error' %}alert-danger{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<script>
+  // 6 second (6000ms) baad hide
+  setTimeout(function() {
+    let msgBox = document.getElementById("django-messages");
+    if (msgBox) {
+      msgBox.style.display = "none";
+    }
+  }, 6000); // <-- 6000 = 6 seconds (10s ke liye 10000 kar do)
+</script>
+
+<style>
+  .alert-success {
+    color: green !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .alert-danger {
+    color: red !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+</style>
+
+
+        <!-- Form Errors -->
+        {% if form.errors %}
+          <div class="form-errors" style="color: red; margin: 10px 0;">
+            {{ form.errors }}
+          </div>
+        {% endif %}
+
+        <!-- Form Fields -->
+        <div class="form-row">
+          <label>Teacher Name</label>
+          {{ form.name }}
+        </div>
+        <div class="form-row">
+          <label>Teacher Contact #</label>
+          {{ form.contact }}
+        </div>
+        <div class="form-row">
+          <label>Teacher Email</label>
+          {{ form.email }}
+        </div>
+        <div class="form-row">
+          <label>Teacher Qualification</label>
+          {{ form.qualification }}
+        </div>
+        <div class="form-row">
+          <label>Teacher Experience</label>
+          {{ form.experience }}
+        </div>
+        <div class="form-row">
+          <label>Teacher Image</label>
+          {{ form.image }}
+        </div>
+        <div class="form-row textarea-row">
+          <label>Teacher Address</label>
+          {{ form.address }}
+        </div>
+
+        <!--Submit -->
+        <div class="form-actions">
+          <button class="btn-submit" type="submit">Add New Teacher</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script src="{% static 'js/manageaddteacher.js' %}"></script>
+</body>
+</html>

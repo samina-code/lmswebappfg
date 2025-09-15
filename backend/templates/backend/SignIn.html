@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS - Log In</title>
+  <link rel="stylesheet" href="{% static 'css/SignIn.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    .error-messages {
+      list-style: none;
+      padding: 10px;
+      margin-bottom: 15px;
+      background-color: #ffe0e0;
+      color: #c0392b;
+      border-radius: 5px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+      <span class="brand-name">Smart Learning</span>
+    </div>
+    <ul>
+      <li><a href="{% url 'Home' %}">Home</a></li>
+      <li><a href="{% url 'SignIn' %}">Login</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+    </ul>
+  </header>
+
+  <!-- Main Login Form -->
+  <main>
+    <div class="login-container">
+      <h2>Log In</h2>
+
+      <!-- Error Messages Block -->
+      {% if messages %}
+        <ul class="error-messages">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <form id="loginForm" method="POST" action="{% url 'SignIn' %}" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <div class="input-group">
+          <input type="email" name="email" id="email" placeholder="Email Address *" required>
+        </div>
+        <div class="input-group">
+          <input type="password" name="password" id="password" placeholder="Password *" required>
+        </div>
+        <button type="submit" class="btn">Log In</button>
+      </form>
+
+      <div class="options">
+        <a href="{% url 'password_reset' %}">Forgot password?</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="{% static 'js/SignIn.js' %}"></script>
+  <footer>
+     <p>&copy; Design and  developed by samina ,fatima ,madeeha and kiran.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+.main-header {
+  background-color: #003366;
+  color: white;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 60px;
+  padding-right: 20px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.brand-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logout-link {
+  color: rgb(223, 223, 23);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 5px 10px;
+  margin-right: 20px;
+}
+
+.logout-link:hover {
+  text-decoration: underline;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 230px;
+  height: calc(100vh - 60px);
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 12px 20px;
+  margin: 10px 15px;
+  text-decoration: none;
+  font-size: 12px;
+  background-color: #003366;
+  border-radius: 6px;
+  color: white;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar a:hover {
+  background-color: #0066CC;
+  transform: translateX(5px);
+}
+
+.sidebar i {
+  margin-right: 10px;
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+.sidebar a.active {
+  background-color: white;
+  color: #003366;
+  font-weight: bold;
+  border-left: 4px solid #ffcc00;
+}
+
+.sidebar a.active:hover {
+  background-color: #e6e6e6;
+}
+
+/* Quiz Container */
+.quiz-container {
+  max-width: 800px;
+  margin: 100px 30px 30px 250px;
+  /* top | right | bottom | left */
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.question-block {
+  margin-bottom: 20px;
+}
+
+.question-block p {
+  font-weight: bold;
+}
+
+label {
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+.submit-btn {
+  background-color: #003366;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #002244;
+}
+
+/*  Result Section */
+#resultMessage {
+  margin-top: 20px;
+}
+
+#resultMessage h3 {
+  color: #003366;
+  margin-bottom: 15px;
+}
+
+/*  Result Table */
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.result-table th,
+.result-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.result-table th {
+  background: #003366;
+  color: white;
+}
+
+/*  Green for correct answers */
+.result-table tr.correct {
+  background-color: #e6ffe6;
+  /* light green */
+}
+
+.result-table tr.correct td {
+  color: #006600;
+  font-weight: bold;
+}
+
+/*  Red for wrong answers */
+.result-table tr.wrong {
+  background-color: #ffe6e6;
+  /* light red */
+}
+
+.result-table tr.wrong td {
+  color: #990000;
+  font-weight: bold;
+}

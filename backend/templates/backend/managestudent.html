@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Student - Admin Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/managestudent.css' %}" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <script defer src="{% static 'js/managestudent.js' %}"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo-section">
+      <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+      <span class="brand-name">SmartLearning</span>
+    </div>
+    <ul>
+      <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </header>
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Admin Panel</h2>
+      <ul>
+        <li><a href="{% url 'admindashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="{% url 'manage_students' %}" class="active"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+        <li><a href="{% url 'manageaddteacher' %}"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+        <li><a href="{% url 'manage_semesters' %}"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <div class="container">
+        <div class="form-header">
+          <h3>Add New Student</h3>
+          <a href="{% url 'view_students' %}" id="viewAllBtn"><i class="fas fa-users"></i> View All Students</a>
+        </div>
+          {% if messages %}
+  <div id="django-messages">
+    {% for message in messages %}
+      <div 
+        class="alert 
+               {% if message.tags == 'success' %}alert-success{% endif %}
+               {% if message.tags == 'error' %}alert-danger{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<script>
+  // 6 second (6000ms) baad hide
+  setTimeout(function() {
+    let msgBox = document.getElementById("django-messages");
+    if (msgBox) {
+      msgBox.style.display = "none";
+    }
+  }, 6000); // <-- 6000 = 6 seconds (10s ke liye 10000 kar do)
+</script>
+
+<style>
+  .alert-success {
+    color: green !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+  .alert-danger {
+    color: red !important;
+    font-weight: bold;
+    padding: 10px;
+  }
+</style>
+
+
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- Validation Errors Display -->
+          {% if form.errors %}
+            <div class="form-errors" style="background: #ffe6e6; color: #b30000; padding: 10px; border-radius: 6px; margin-bottom: 20px;">
+              <strong>Please fix the following errors:</strong>
+              <ul style="margin-top: 10px; padding-left: 20px;">
+                {% for field in form %}
+                  {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                  {% endfor %}
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <div class="form-group">
+            <label>Student Name</label>
+            <input type="text" name="name" placeholder="Enter Student Name" required />
+          </div>
+
+          <div class="form-group">
+            <label>Student Contact #</label>
+            <input type="text" name="contact" placeholder="Enter Student Contact #" required />
+          </div>
+
+          <div class="form-group">
+            <label>Student Email</label>
+            <input type="email" name="email" placeholder="Enter Student Email" required />
+          </div>
+
+          <div class="form-group">
+            <label>Student Reg #</label>
+            <input type="text" name="reg_no" placeholder="Enter Student Reg #" required />
+          </div>
+
+          <div class="form-group">
+            <label>Student Father Name</label>
+            <input type="text" name="father_name" placeholder="Enter Student Father Name" required />
+          </div>
+
+          <div class="form-group">
+            <label>Student Father Contact</label>
+            <input type="text" name="father_contact" placeholder="Enter Father Contact #" required />
+          </div>
+
+          <div class="form-group">
+            <label>Student Image</label>
+            <input type="file" name="image" />
+          </div>
+
+          <div class="form-group">
+            <label>Student Address</label>
+            <textarea name="address" placeholder="Enter Student Address" required></textarea>
+          </div>
+
+          <div class="form-footer">
+            <button type="submit">Add New Student</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

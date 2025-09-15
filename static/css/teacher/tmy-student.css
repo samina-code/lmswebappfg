@@ -1,0 +1,243 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 0;
+  }
+  
+ 
+  /* Header */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #003366;
+  padding: 15px 30px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 50px;
+  width: 50px;
+  margin-right: 15px;
+  border-radius: 50%;
+  background: white;
+  object-fit: cover;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+header ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+header ul li a {
+  text-decoration: none;
+  color: #e8eaed;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+header ul li a:hover {
+  color: #ffcc00;
+}
+
+/*  Fixed Sidebar below header */
+.sidebar {
+  width: 230px;
+  height: calc(100vh - 60px);
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;
+}
+  /*  Fixed Sidebar below header */
+  .sidebar {
+    width: 230px;
+    height: calc(100vh - 60px);
+    position: fixed;
+    top: 60px;
+    left: 0;
+    background-color: #0066CC;
+    color: white;
+    padding: 20px 0;
+    overflow-y: auto;
+  }
+  
+  .sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  .sidebar a {
+    display: block;
+    padding: 12px 20px;
+    margin: 10px 15px;
+    text-decoration: none;
+    font-size: 12px;
+    background-color: #003366;
+    border-radius: 6px;
+    color: white;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .sidebar a:hover {
+    background-color: #0066CC;
+    transform: translateX(5px);
+  }
+  
+  .sidebar i {
+    margin-right: 10px;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+  
+  .sidebar a.active {
+    background-color: white;
+    color: #003366;
+    font-weight: bold;
+    border-left: 4px solid #ffcc00;
+  }
+  
+  .sidebar a.active:hover {
+    background-color: #e6e6e6;
+  }
+  
+  
+    .container {
+        margin-top: 80px;         /* To push below header */
+        margin-left: 250px;       /* To push beside sidebar */
+        padding: 30px;
+      }
+      
+      
+/* Subject grid */
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 15px;
+}
+
+/* Subject Card */
+.subject-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.subject-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Teacher Info */
+.teacher-info {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.teacher-photo {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+  border: 2px solid #4a90e2;
+}
+
+/* Headings */
+.subject-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Details */
+.subject-card p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.subject-card b {
+  color: #222;
+}
+  
+  .controls {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  #semesterFilter,
+  #searchInput {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  .students-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  
+  .student-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .student-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 2px solid #003366;
+  }
+  
+  .student-card h4 {
+    margin: 10px 0 5px;
+    color: #003366;
+  }
+  
+  .student-card p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .student-actions a {
+    text-decoration: none;
+    margin: 0 8px;
+    font-size: 14px;
+    color: #0066cc;
+  }
+  
+  .student-actions a:hover {
+    text-decoration: underline;
+  }
+  

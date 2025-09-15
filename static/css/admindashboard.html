@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard | SmartLearning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="admindashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!--  Header -->
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo" class="logo" />
+      <span class="brand-name">Smart Learning</span>
+    </div>
+    <ul>
+      <li><a href="SignIn.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+
+  </header>
+
+  <div class="dashboard-container">
+    <!--  Sidebar -->
+    <aside class="sidebar">
+      <h2>Admin Panel</h2>
+      <ul>
+        <li><a href="admindashboard.html"class="active"><i class="fas fa-home"></i> Dahboard</a></li>
+        <li><a href="managestudent.html"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
+        <li><a href="manageaddteacher.html"><i class="fas fa-chalkboard-teacher"></i> Manage Teachers</a></li>
+        <li><a href="mangesemester.html"><i class="fas fa-calendar-alt"></i> Manage Semesters</a></li>
+        
+      </ul>
+    </aside>
+
+    <!--  Main Content -->
+    <main class="content">
+      <!--  Admin tools -->
+      <div class="admin-tools">
+        <h2>Welcome, Admin!</h2>
+        <div class="tools">
+          <input type="text" class="search-input" placeholder="Search..." />
+          <button id="darkModeToggle"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+
+      <!--  Overview Cards -->
+      <section class="overview">
+        <div class="card">Total Students: <strong>250</strong></div>
+        <div class="card">Total Teachers: <strong>40</strong></div>
+        <div class="card">Total Semesters: <strong>4</strong></div>
+      </section>
+
+      <!-- Charts -->
+      <section class="chart-section">
+        <h3>📊 Data Overview</h3>
+        <div class="chart-container">
+          <div class="chart-box">
+            <h4>Students by Semester</h4>
+            <canvas id="studentChart"></canvas>
+          </div>
+          <div class="chart-box">
+            <h4>Teachers by Semester</h4>
+            <canvas id="teacherChart"></canvas>
+          </div>
+          <div class="chart-box">
+            <h4>Semester Activity</h4>
+            <canvas id="semesterChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!--  Activity Log -->
+      <section class="log-section">
+        <h3>Recent Admin Activity</h3>
+        <ul>
+          <li>✅ Added 10 new students</li>
+          <li>✅ Assigned "AI" subject to Sir Bilal</li>
+          <li>✅ Created new semester "Fall 2025"</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="admindashboard.js"></script>
+</body>
+</html>

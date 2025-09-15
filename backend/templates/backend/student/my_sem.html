@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Semester</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/student/my_sem.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <style>
+        /* Fixed Sidebar below header */
+.sidebar {
+  width: 238px;
+  height: calc(100vh - 60px); /* 60px = header height */
+  position: fixed;
+  top: 80px; 
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;      /* enables vertical scroll */
+  box-sizing: border-box; /* include padding in height calculation */
+  scrollbar-width: thin;  /* Firefox thin scrollbar */
+}
+
+/* Optional: Custom scrollbar for Chrome/Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+.semester-section {
+  padding: 30px;
+  max-width: 1000px;
+  margin: 40px 30px 30px 250px; /* top | right | bottom | left */
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+</style>
+    <!-- HEADER -->
+    <header class="dashboard-header">
+        <div class="logo-container">
+            <img src="{% static 'images/logo.png' %}" alt="SmartLearning Logo" class="logo-img">
+            <span class="brand-name">SmartLearning</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+   
+            </ul>
+        </nav>
+    </header>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>Student Panel</h2>
+        <a href="{% url 'student_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="{% url 'my_sem' %}" class="active"><i class="bi bi-journal-text"></i> My Semester</a>
+        <a href="{% url 'subjects' %}"><i class="bi bi-folder2-open"></i> My Subjects</a>
+        <a href="{% url 'upload_assignment' %}"><i class="bi bi-cloud-upload"></i> Upload Assignment</a>
+        <a href="{% url 'my_quiz' %}"><i class="bi bi-check2-square"></i> My Quizzes</a>
+        <a href="{% url 'teacherperformance' %}"><i class="bi bi-graph-up"></i> My Performance</a>
+        <a href="{% url 'feedback' %}"><i class="bi bi-chat-square-dots"></i> Submit Feedback</a>
+        <a href="{% url 'announcement' %}"><i class="bi bi-megaphone"></i> Announcements</a>
+    </div>
+
+    <!-- SEMESTER CONTENT -->
+    <div class="semester-section">
+        <h2>My Semester Details</h2>
+       
+{% if semester %}
+    <p><strong>Semester:</strong> {{ semester.title }}</p>
+
+    <p><strong>Start Date:</strong> 
+       {{ student_semester.start_date|default:semester.start_date|default:"Not Set" }}</p>
+
+    <p><strong>End Date:</strong> 
+       {{ student_semester.end_date|default:semester.end_date|default:"Not Set" }}</p>
+
+    <!-- Midterm & Final from Announcements -->
+    <p><strong>Midterm Exams:</strong> 
+       {% if midterm_announcement %} {{ midterm_announcement.date_posted }} {% else %} Not Announced {% endif %}
+    </p>
+
+    <p><strong>Final Exams:</strong> 
+       {% if final_announcement %} {{ final_announcement.date_posted }} {% else %} Not Announced {% endif %}
+    </p>
+
+    <!-- Notes from Material -->
+    <p><strong>Notes:</strong></p>
+    {% if notes %}
+        <ul>
+        {% for note in notes %}
+            <li>
+                {{ note.lecture_title }} ({{ note.subject.name }}) 
+                <a href="{{ note.pdf_file.url }}" target="_blank">Download</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No notes uploaded yet.</p>
+    {% endif %}
+{% else %}
+    <p>No semester assigned yet.</p>
+{% endif %}
+
+    </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+    <script src="{% static 'js/my_sem.js' %}"></script>
+</body>
+
+</html>

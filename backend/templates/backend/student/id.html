@@ -1,0 +1,493 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Student Dashboard</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/student/id.css' %}" />
+</head>
+<body>
+  <style>
+    /* Fixed Sidebar below header */
+.sidebar {
+  width: 238px;
+  height: calc(100vh - 60px); /* 60px = header height */
+  position: fixed;
+  top: 60px; 
+  left: 0;
+  background-color: #0066CC;
+  color: white;
+  padding: 20px 0;
+  overflow-y: auto;      /* enables vertical scroll */
+  box-sizing: border-box; /* include padding in height calculation */
+  scrollbar-width: thin;  /* Firefox thin scrollbar */
+}
+
+/* Optional: Custom scrollbar for Chrome/Edge */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+</style>
+  <!-- HEADER START -->
+  <header class="dashboard-header">
+    <div class="logo-container">
+      <img src="{% static 'images/logo.png' %}" alt="SmartLearning" class="logo-img" />
+      <h1>SmartLearning</h1>
+    </div>
+    <ul>
+      <li><a href="{% url 'SignIn' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </header>
+  <!-- HEADER END -->
+
+  <div class="sidebar">
+    <h2>Student Panel</h2>
+    <a href="{% url 'student_dashboard' %}" class="active"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{% url 'my_sem' %}" class="semester-link"><i class="bi bi-journal-text"></i> My Semester</a>
+    <a href="{% url 'subjects' %}"><i class="bi bi-folder2-open"></i> My Subjects</a>
+    <a href="{% url 'upload_assignment' %}"><i class="bi bi-cloud-upload"></i>upload_assignment</a>
+    <a href="{% url 'my_quiz' %}"><i class="bi bi-check2-square"></i> My Quizzes</a>
+    <a href="{% url 'teacherperformance' %}"><i class="bi bi-graph-up"></i> My Performance</a>
+    <a href="{% url 'feedback' %}"><i class="bi bi-chat-square-dots"></i> Submit Feedback</a>
+    <a href="{% url 'announcement' %}"><i class="bi bi-megaphone"></i> Announcements</a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-bar">
+      <h1>
+      
+         {% if user.first_name or user.last_name %}
+  Welcome, {{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}!
+{% else %}
+  Welcome, {{ user.username }}!
+{% endif %}
+
+
+
+
+     
+      </h1>
+   
+      <div class="header-actions">
+        <input type="text" class="search-input" placeholder="Search...">
+        <!-- Notification Bell -->
+<div class="notification-wrapper">
+  <button id="notificationBtn" onclick="toggleNotifications()">
+    <i class="bi bi-bell"></i>
+   
+{% if notifications %}
+  <span id="notificationCount">{{ notifications|length }}</span>
+{% endif %}
+ 
+  </button>
+
+  <!-- Notification Dropdown -->
+  <div id="notificationDropdown" class="notification-dropdown">
+    <h5>Notifications</h5>
+    <ul>
+      {% for note in notifications|slice:":4" %}
+        <li>{{ note }}</li>
+      {% empty %}
+        <li>No new notifications</li>
+      {% endfor %}
+    </ul>
+  </div>
+  
+</div>
+
+        
+
+<style>
+ 
+/* Search Input */
+.search-input {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+/* Notification Wrapper */
+.notification-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+/* Bell Button */
+.notification-wrapper button {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+.notification-wrapper button i {
+  font-size: 18px;
+}
+
+/* Count Badge */
+#notificationCount {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: red;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 50%;
+}
+
+/* Dropdown */
+.notification-dropdown {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 260px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 100;
+}
+
+.notification-dropdown h5 {
+  margin: 0;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.notification-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notification-dropdown ul li {
+  padding: 10px 15px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notification-dropdown ul li:hover {
+  background: #f9f9f9;
+}
+
+/* "NEW" Badge */
+.notification-dropdown ul li::before {
+  content: "NEW";
+  background: #0056b3;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 3px 6px;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+</style>
+
+
+
+        <label class="dark-mode-switch">
+          <input type="checkbox" id="darkToggle" onchange="toggleDarkMode()">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+   
+   
+    <div class="theme-customizer">
+      <h4>Choose Theme:</h4>
+      <div class="theme-options">
+        <button class="theme-btn blue" onclick="setTheme('#0066CC')"></button>
+        <button class="theme-btn green" onclick="setTheme('green')"></button>
+        <button class="theme-btn red" onclick="setTheme('red')"></button>
+        <button class="theme-btn purple" onclick="setTheme('purple')"></button>
+      </div>
+    </div>
+
+    <!-- Widgets -->
+    <div class="widgets-row">
+      <!-- Tasks -->
+      <div class="widget-card">
+        <h5><i class="bi bi-check2-circle"></i> Task Checklist</h5>
+        <ul id="taskList">
+          
+          {% for task in task_checklist %}
+     
+            <li><input type="checkbox" {% if task.completed %}checked{% endif %}> {{ task }}</li>
+          {% empty %}
+            <li>No tasks available</li>
+          {% endfor %}
+        </ul>
+        <div class="task-checklist">
+  
+</div>
+
+
+      </div>
+
+      <!-- Achievements -->
+      <div class="widget-card">
+        <h5><i class="bi bi-award"></i> Achievements</h5>
+<ul>
+    {% for achievement in achievements %}
+      <li>{{ achievement }}</li>
+    {% empty %}
+      <li>No achievements yet</li>
+    {% endfor %}
+  </ul>       
+        
+       
+
+      </div>
+      
+
+<!-- Notes -->
+<div class="widget-card">
+  <h5><i class="bi bi-journal-text"></i> Quick Notes</h5>
+
+  <!-- Form to save or update note -->
+  <form method="post" action="{% url 'save_note' %}">
+    {% csrf_token %}
+    <textarea name="note_content" placeholder="Type something..." rows="5">{% if note %}{{ note.text }}{% endif %}</textarea>
+    
+    <div class="note-actions">
+      <button type="submit" class="save-btn"><i class="fas fa-save"></i> Save Note</button>
+
+      {% if note %}
+      <a href="{% url 'delete_note' note.id %}" class="delete-btn" onclick="return confirm('Are you sure you want to delete this note?');">
+        <i class="fas fa-trash-alt"></i> Delete Note
+      </a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+     
+    </div>
+
+    <!-- Dashboard Section -->
+    <div class="dashboard-section">
+      <!-- Upload Assignment -->
+      <div class="file-upload">
+        
+        
+     <h4>  <a href="{% url 'upload_assignment' %}"><i class="bi bi-cloud-upload"></i> Upload Assignment</a>
+
+        
+      </div>
+
+     <div class="countdown">
+  <h4><i class="bi bi-hourglass-split"></i> Next Quiz</h4>
+  {% if next_quiz %}
+    <p style="font-weight:bold; font-size:16px;"> {{ next_quiz.title }}</p>
+    <div id="countdownTimer" data-date="{{ next_quiz.due_date|date:'Y-m-d' }} 23:59:59"></div>
+  {% else %}
+    <p>No upcoming quiz</p>
+  {% endif %}
+</div>
+
+
+      <!--  Timeline -->
+      <div class="timeline">
+        {% for event in events %}
+          <div class="step {% if event.date < today %}completed{% endif %}">
+            {{ event.title }}
+          </div>
+        {% empty %}
+          <p>No events</p>
+        {% endfor %}
+      </div>
+
+      <!--  Calendar -->
+     
+        <div class="calendar-container">
+ 
+  <div class="calendar-container">
+  <h4><i class="bi bi-calendar-event"></i> Calendar</h4>
+  <input type="date" />
+  <div class="event-box">
+    {% for event in events %}
+       <p>📌 {{ event.created_at|date:"d M" }} - {{ event.get_event_title }}</p>
+    {% empty %}
+      <p>No events</p>
+    {% endfor %}
+  </div>
+</div>
+
+</div>
+
+      </div>
+
+      <!-- Todos -->
+      <div class="todo-drag">
+        <h4><i class="bi bi-list-task"></i> Drag & Drop Tasks</h4>
+        <ul id="dragTodo">
+         <ul id="dragTodo">
+  {% for todo in todos %}
+    <li draggable="true">{{ todo.title }}</li>
+  {% empty %}
+    <li>No announcements yet</li>
+  {% endfor %}
+</ul>
+
+
+      </div>
+      
+    </div>
+    
+
+    <button id="stickyBtn" onclick="toggleStickyNote()">✍️</button>
+    <div id="stickyNote" class="sticky-note">
+      <textarea placeholder="Quick sticky note..."></textarea>
+    </div>
+
+    <div id="toast" class="toast">✔️ Task Completed!</div>
+  </div>
+
+  
+
+  <script src="{% static 'js/student/id.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+function startCountdown() {
+    const countdownElem = document.getElementById("countdownTimer");
+    if (!countdownElem) return;
+
+    const targetDate = new Date(countdownElem.dataset.date).getTime();
+
+    const interval = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance < 0) {
+            countdownElem.innerHTML = "No upcoming quiz";
+            clearInterval(interval);
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        countdownElem.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }, 1000);
+}
+
+document.addEventListener("DOMContentLoaded", startCountdown);
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Subject Performance Chart
+    const subjectNames = {{ subject_names|safe }};  // ["Math", "Science", "English"]
+    const subjectMarks = {{ subject_marks|safe }};  // [85, 90, 78]
+
+    const subjectCtx = document.getElementById('subjectChart').getContext('2d');
+    const subjectChart = new Chart(subjectCtx, {
+        type: 'bar',
+        data: {
+            labels: subjectNames,
+            datasets: [{
+                label: 'Marks',
+                data: subjectMarks,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, max: 100 }  // assuming marks are out of 100
+            }
+        }
+    });
+
+    // Overall Progress Chart
+    const progressValue = parseInt({{ progress|default:0 }});
+    const progressCtx = document.getElementById('progressChart').getContext('2d');
+    const progressChart = new Chart(progressCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Remaining'],
+            datasets: [{
+                data: [progressValue, 100 - progressValue],
+                backgroundColor: ['#4caf50', '#e0e0e0'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+});
+
+
+
+// Optional: close dropdown if clicked outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById("notificationDropdown");
+    const btn = document.getElementById("notificationBtn");
+    if (!btn.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.style.display = "none";
+    }
+});
+
+
+// Close dropdown if clicked outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById("notificationDropdown");
+    const btn = document.getElementById("notificationBtn");
+
+    if (!btn.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.style.display = "none";
+    }
+});
+function toggleNotifications() {
+    const dropdown = document.getElementById("notificationDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+
+    if (dropdown.style.display === "block") {
+        // Mark all as read
+        fetch("{% url 'mark_notifications_read' %}", {
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+        }).then(() => {
+            const count = document.getElementById("notificationCount");
+            if (count) count.remove(); 
+        });
+    }
+}
+
+
+
+</script>
+
+
+
+</body>
+</html>

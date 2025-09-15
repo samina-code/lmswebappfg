@@ -1,0 +1,180 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: #f0f0f0;
+  }
+  .main-header {
+    background-color: #003366;
+    color: white;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    height: 60px;
+    padding-right: 20px;
+  }
+  
+  .logo-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .brand-name {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .logout-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 5px 10px;
+    margin-right: 20px;
+  }
+  
+  .logout-link:hover {
+    text-decoration: underline;
+  }
+  
+  /*  Fixed Sidebar below header */
+  .sidebar {
+    width: 230px;
+    height: calc(100vh - 60px);
+    position: fixed;
+    top: 60px;
+    left: 0;
+    background-color: #0066CC;
+    color: white;
+    padding: 20px 0;
+    overflow-y: auto;
+  }
+  
+  .sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: white;
+
+  }
+  
+  .sidebar a {
+    display: block;
+    padding: 12px 20px;
+    margin: 10px 15px;
+    text-decoration: none;
+    font-size: 12px;
+    background-color: #003366;
+    border-radius: 6px;
+    color: white;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .sidebar a:hover {
+    background-color: #0066CC;
+    transform: translateX(5px);
+  }
+  
+  .sidebar i {
+    margin-right: 10px;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+  
+  .sidebar a.active {
+    background-color: white;
+    color: #003366;
+    font-weight: bold;
+    border-left: 4px solid #ffcc00;
+  }
+  
+  .sidebar a.active:hover {
+    background-color: #e6e6e6;
+  }
+  /*  Main */
+  
+  .performance-container {
+    max-width: 1000px;
+    margin: 80px auto 30px 230px;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  
+  h2, h3 {
+    color: #003366;
+  }
+  
+  label {
+    font-weight: bold;
+    margin-top: 15px;
+    display: block;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  button {
+    margin-top: 20px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #002b55;
+  }
+  
+  .record-card {
+    background: #f9f9f9;
+    padding: 15px;
+    border-left: 4px solid #003366;
+    border-radius: 6px;
+    margin-top: 15px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+  }
+  
+  .record-card p {
+    margin: 4px 0;
+    font-size: 14px;
+  }
+  
+  .record-card .cgpa {
+    font-weight: bold;
+    color: #006600;
+    margin-top: 5px;
+  }
+  
+  .delete-btn {
+    margin-top: 10px;
+    background-color: #cc0000;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
