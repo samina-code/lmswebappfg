@@ -1072,132 +1072,6 @@ from backend.models import (
 )
 
 
-@login_required
-def teacher_dashboard(request):
-    #  Get the teacher linked to current user
-    try:
-        teacher = Teacher.objects.get(user=request.user)
-    except Teacher.DoesNotExist:
-        messages.error(request, "Teacher profile not found.")
-        return redirect("Home")  # redirect somewhere safe
-
-    #  Assigned subjects
-    assigned_subjects = AssignedSubject.objects.filter(teacher=teacher)
-    teacher_subject_ids = assigned_subjects.values_list("subject_id", flat=True)
-
-    #  Semesters this teacher teaches
-    teacher_semesters = assigned_subjects.values_list("semester_id", flat=True).distinct()
-    selected_semester = teacher_semesters.first() if teacher_semesters.exists() else None
-
-    #  Total students in these semesters
-    total_students = StudentSemester.objects.filter(
-        semester_id__in=teacher_semesters
-    ).count()
-
-    #  Total subjects
-    total_subjects = assigned_subjects.count()
-
-    #  Average score for selected semester
-    student_ids = (
-        StudentSemester.objects.filter(semester_id=selected_semester)
-        .values_list("student_id", flat=True)
-        if selected_semester else []
-    )
-
-    avg_scores = Performance.objects.filter(
-        student_id__in=student_ids, semester_id=selected_semester
-    ).annotate(
-        total_score=F("assignment") + F("quiz") + F("midterm") + F("final")
-    ).aggregate(avg=Avg("total_score"))
-
-    average_score = avg_scores["avg"] or 0
-
-    #  Pending assignments
-    pending_assignments = Assignment.objects.filter(
-        student__id__in=student_ids,
-        subject_id__in=teacher_subject_ids,
-        graded=False
-    ).count()
-
-    #  All student assignments for this teacher
-    
-
-    student_assignments = Assignment.objects.filter(
-    Q(subject__id__in=teacher_subject_ids) | Q(subject__isnull=True)
-).select_related("student", "subject").order_by("-uploaded_at")
-
-    #  Handle grading (teacher posts marks)
-    if request.method == "POST" and "submission_id" in request.POST:
-        submission_id = request.POST.get("submission_id")
-        grade = request.POST.get("grade")
-        feedback = request.POST.get("feedback", "")
-
-        submission = get_object_or_404(Assignment, id=submission_id)
-        submission.graded = True
-        submission.grade = grade
-        submission.feedback = feedback
-        submission.save()
-
-        #  Update Performance (no duplicates)
-        if grade and grade.isdigit():
-            new_marks = int(grade)
-
-            # Pehle se performance record hai kya?
-            perf = Performance.objects.filter(
-                student_id=submission.student.id,
-                subject_id=submission.subject.id,
-                semester_id=submission.student.semester.id,
-            ).first()
-
-            if perf:
-                # sirf assignment update karo, baaki preserve ho
-                perf.assignment = new_marks
-                perf.save()
-            else:
-                # agar nahi hai to naya banao
-                Performance.objects.create(
-                    student=submission.student,
-                    subject=submission.subject,
-                    semester=submission.student.semester,
-                    assignment=new_marks
-                )
-
-        messages.success(request, f"✅ Marks saved for {submission.student}")
-        return redirect("teacher_dashboard")
-
-    #  Recent Activities
-    recent_activities = Activity.objects.filter(
-        teacher=request.user
-    ).order_by("-timestamp")[:5]
-
-    #  Feedback notifications
-    all_feedback = LectureFeedback.objects.filter(
-    lecture__subject_id__in=teacher_subject_ids
-).select_related("student", "lecture").order_by("-id")
-
-    unread_count = all_feedback.filter(is_read=False).count()
-    feedback_messages = all_feedback[:10]
-
-
-    unread_count = LectureFeedback.objects.filter(
-    lecture__subject__assignedsubject__teacher__user=request.user,
-    is_read=False
-).count()
-
-    context = {
-        "total_students": total_students,
-        "total_subjects": total_subjects,
-        "average_score": round(average_score, 2),
-        "pending_assignments": pending_assignments,
-        "recent_activities": recent_activities,
-        "assigned_subjects": assigned_subjects,
-        "selected_semester": selected_semester,
-        "student_assignments": student_assignments,
-        "feedback_messages": feedback_messages,
-        "unread_feedback_count": unread_count,
-    }
-
-    return render(request, "backend/teacher/teacherdashboard.html", context)
 
 from django.http import JsonResponse
 
@@ -1222,12 +1096,173 @@ def mark_feedback_as_read(request, fb_id):
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, F, Q
+from .models import (
+    Teacher, AssignedSubject, StudentSemester, Student, 
+    Assignment, Performance, Activity, LectureFeedback, Semester
+)
+
+
+@login_required
+def teacher_dashboard(request):
+    #  Get teacher linked to current user
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+    except Teacher.DoesNotExist:
+        messages.error(request, "Teacher profile not found.")
+        return redirect("Home")
+
+    #  Assigned subjects
+    assigned_subjects = AssignedSubject.objects.filter(teacher=teacher)
+    teacher_subject_ids = assigned_subjects.values_list("subject_id", flat=True)
+
+    #  Semesters this teacher teaches
+    teacher_semesters = assigned_subjects.values_list("semester_id", flat=True).distinct()
+    selected_semester = teacher_semesters.first() if teacher_semesters.exists() else None
+
+    #  Total students
+    total_students = StudentSemester.objects.filter(
+        semester_id__in=teacher_semesters
+    ).count()
+
+    #  Total subjects
+    total_subjects = assigned_subjects.count()
+
+    #  Average score for selected semester
+    student_ids = (
+        StudentSemester.objects.filter(semester_id=selected_semester)
+        .values_list("student_id", flat=True)
+        if selected_semester else []
+    )
+
+    avg_scores = Performance.objects.filter(
+        student_id__in=student_ids, semester_id=selected_semester
+    ).annotate(
+        total_score=F("assignment") + F("quiz") + F("midterm") + F("final")
+    ).aggregate(avg=Avg("total_score"))
+
+    average_score = avg_scores["avg"] or 0
+
+    # Pending assignments
+    pending_assignments = Assignment.objects.filter(
+        student__id__in=student_ids,
+        subject_id__in=teacher_subject_ids,
+        graded=False
+    ).count()
+
+    #  All student assignments for this teacher
+    student_assignments = Assignment.objects.filter(
+        Q(subject__id__in=teacher_subject_ids) | Q(subject__isnull=True)
+    ).select_related("student", "subject").order_by("-uploaded_at")
+
+    # Handle grading (POST request)
+    if request.method == "POST" and "submission_id" in request.POST:
+        submission_id = request.POST.get("submission_id")
+        grade = request.POST.get("grade")
+        feedback = request.POST.get("feedback", "")
+
+        submission = get_object_or_404(Assignment, id=submission_id)
+        submission.graded = True
+        submission.grade = grade
+        submission.feedback = feedback
+        submission.save()
+
+        # Update Performance (no duplicates)
+        if grade and grade.isdigit():
+            new_marks = int(grade)
+
+            # Student ka latest semester nikaalo
+            student_semester_obj = StudentSemester.objects.filter(
+                student=submission.student
+            ).order_by("-id").first()
+
+            if student_semester_obj:
+                semester_id = student_semester_obj.semester.id
+
+                # Pehle check karo existing record
+                perf = Performance.objects.filter(
+                    student=submission.student,
+                    subject=submission.subject,
+                    semester_id=semester_id
+                ).first()
+
+                if perf:
+                    #  sirf assignment update karo
+                    perf.assignment = new_marks
+                    perf.save()
+                else:
+                    #  agar nahi hai to naya banao
+                    Performance.objects.create(
+                        student=submission.student,
+                        subject=submission.subject,
+                        semester_id=semester_id,
+                        assignment=new_marks
+                    )
+
+        messages.success(request, f"✅ Marks saved for {submission.student}")
+        return redirect("teacher_dashboard")
+
+    #  Recent activities
+    recent_activities = Activity.objects.filter(
+        teacher=request.user
+    ).order_by("-timestamp")[:5]
+
+    # Feedback notifications
+    all_feedback = LectureFeedback.objects.filter(
+        lecture__subject_id__in=teacher_subject_ids
+    ).select_related("student", "lecture").order_by("-id")
+
+    unread_count = all_feedback.filter(is_read=False).count()
+    feedback_messages = all_feedback[:10]
+
+    #  Context for template
+    context = {
+        "total_students": total_students,
+        "total_subjects": total_subjects,
+        "average_score": round(average_score, 2),
+        "pending_assignments": pending_assignments,
+        "recent_activities": recent_activities,
+        "assigned_subjects": assigned_subjects,
+        "selected_semester": selected_semester,
+        "student_assignments": student_assignments,
+        "feedback_messages": feedback_messages,
+        "unread_feedback_count": unread_count,
+    }
+
+    return render(request, "backend/teacher/teacherdashboard.html", context)
+
 
 def mark_all_feedback_as_read(request):
     teacher = get_object_or_404(Teacher, user=request.user)
 
     LectureFeedback.objects.filter(
         lecture__subject__assignedsubject__teacher=teacher,
+        is_read=False
+    ).update(is_read=True)
+
+    return JsonResponse({"status": "success", "unread_count": 0})
+
+@login_required
+def mark_all_feedback_as_read(request):
+    teacher = get_object_or_404(Teacher, user=request.user)
+    subject_ids = AssignedSubject.objects.filter(teacher=teacher).values_list("subject_id", flat=True)
+
+    LectureFeedback.objects.filter(
+        lecture__subject_id__in=subject_ids,
+        is_read=False
+    ).update(is_read=True)
+
+    return JsonResponse({"status": "success", "unread_count": 0})
+@login_required
+def mark_all_feedback_as_read(request):
+    teacher = get_object_or_404(Teacher, user=request.user)
+    subject_ids = AssignedSubject.objects.filter(teacher=teacher).values_list("subject_id", flat=True)
+
+    LectureFeedback.objects.filter(
+        lecture__subject_id__in=subject_ids,
         is_read=False
     ).update(is_read=True)
 
@@ -1419,18 +1454,24 @@ from .models import Quiz, Question, Semester, Subject
 from .forms import QuizForm
 
 
+@login_required
 def quiz_creator(request):
+    teacher = Teacher.objects.filter(user=request.user).first()
+    assigned_subjects = Subject.objects.filter(assignedsubject__teacher=teacher).distinct()
     semesters = Semester.objects.all()
-   #  Subject use kia main ny assigned subject ki jagah qk subject semester ky hain
 
     if request.method == "POST":
         form = QuizForm(request.POST)
         if form.is_valid():
+            subject = form.cleaned_data['subject']
+            if subject not in assigned_subjects:
+                messages.error(request, " You are not assigned to this subject!")
+                return redirect("quiz_creator")
+
             quiz = form.save(commit=False)
             quiz.created_by = request.user
             quiz.save()
 
-            # JS se aane wali lists
             questions = request.POST.getlist("questions[]")
             optionsA = request.POST.getlist("optionA[]")
             optionsB = request.POST.getlist("optionB[]")
@@ -1449,11 +1490,12 @@ def quiz_creator(request):
                         option_d=d,
                         correct_answer=corr
                     )
-  # Log activity
+
             Activity.objects.create(
                 teacher=request.user,
-                action=f"Created quiz '{quiz.title}' "
+                action=f"Created quiz '{quiz.title}'"
             )
+
             messages.success(request, "Quiz created successfully!")
             return redirect("quiz_creator")
     else:
@@ -1462,11 +1504,8 @@ def quiz_creator(request):
     return render(request, "backend/teacher/quiz_creator.html", {
         "form": form,
         "semesters": semesters,
-         "subjects": Subject.objects.all(),  
-       
+        "subjects": assigned_subjects,
     })
-
-
 
 
 from django.shortcuts import render, redirect
@@ -1474,11 +1513,14 @@ from django.contrib import messages
 from .models import Student, Semester, Subject, Performance
 from .forms import PerformanceForm
 from django.contrib.auth.decorators import login_required
+
 @login_required
 def update_performance(request):
+    teacher = Teacher.objects.filter(user=request.user).first()
+    assigned_subjects = Subject.objects.filter(assignedsubject__teacher=teacher).distinct()
+
     students = Student.objects.all()
     semesters = Semester.objects.all()
-    subjects = Subject.objects.all()
     performances = Performance.objects.all()
 
     if request.method == "POST":
@@ -1494,12 +1536,14 @@ def update_performance(request):
             messages.error(request, "Please select Student, Semester, and Subject.")
             return redirect('update_performance')
 
-        # fetch related objects
-        student = get_object_or_404(Student, id=student_id)
         subject = get_object_or_404(Subject, id=subject_id)
+        if subject not in assigned_subjects:
+            messages.error(request, "❌ You are not assigned to this subject!")
+            return redirect("update_performance")
+
+        student = get_object_or_404(Student, id=student_id)
         semester = get_object_or_404(Semester, id=semester_id)
 
-        # update_or_create to avoid duplicate entries
         performance, created = Performance.objects.update_or_create(
             student=student,
             subject=subject,
@@ -1512,26 +1556,24 @@ def update_performance(request):
             }
         )
 
-        # activity log
         Activity.objects.create(
             teacher=request.user,
-            action=f"Updated performance for {(student.user.username if student.user else student.name)}"
+            action=f"Updated performance for {student.user.username if student.user else student.name}"
         )
 
-        if created:
-            messages.success(request, " Performance added successfully.")
-        else:
-            messages.success(request, " Performance updated successfully.")
+        msg = "Performance added successfully." if created else "Performance updated successfully."
+        messages.success(request, msg)
 
         return redirect('update_performance')
 
-    context = {
+    return render(request, 'backend/teacher/updateperformance.html', {
         "students": students,
         "semesters": semesters,
-        "subjects": subjects,
-        "performances": performances
-    }
-    return render(request, 'backend/teacher/updateperformance.html', context)
+        "subjects": assigned_subjects,
+        "performances": performances,
+    })
+
+
 
 def get_subjects(request, semester_id):
     try:
@@ -1572,12 +1614,11 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 
 
+@login_required
 def teacher_announcement(request):
     teacher = Teacher.objects.filter(user=request.user).first()
     semesters = Semester.objects.all()
-    subjects = Subject.objects.filter(teacher=request.user)
- # adjust field
-
+    assigned_subjects = Subject.objects.filter(assignedsubject__teacher=teacher).distinct()
     announcements = Announcement.objects.filter(teacher=teacher).order_by('-date_posted')
 
     if request.method == "POST" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -1591,8 +1632,11 @@ def teacher_announcement(request):
         if not all([semester_id, subject_id, ann_type, title, description]):
             return JsonResponse({"status": "error", "message": "❌ Please fill all required fields!"})
 
-        semester = get_object_or_404(Semester, id=semester_id)
         subject = get_object_or_404(Subject, id=subject_id)
+        if subject not in assigned_subjects:
+            return JsonResponse({"status": "error", "message": " You are not assigned to this subject!"})
+
+        semester = get_object_or_404(Semester, id=semester_id)
 
         Announcement.objects.create(
             teacher=teacher,
@@ -1603,13 +1647,12 @@ def teacher_announcement(request):
             description=description,
             date_posted=date_input if date_input else None
         )
- # Log activity
+
         Activity.objects.create(
             teacher=request.user,
-            action=f"Posted announcement '{title}' for {subject.title if subject else 'Unknown Subject'}"
-)
+            action=f"Posted announcement '{title}' for {subject.title}"
+        )
 
-        # Refresh announcements list partial
         html = render_to_string("backend/teacher/announcement_list_partial.html", {
             "announcements": Announcement.objects.filter(teacher=teacher).order_by('-date_posted')
         })
@@ -1618,7 +1661,7 @@ def teacher_announcement(request):
 
     return render(request, "backend/teacher/teacher_announcement.html", {
         "semesters": semesters,
-        "subjects": subjects,
+        "subjects": assigned_subjects,
         "announcements": announcements
     })
 
@@ -1930,7 +1973,7 @@ def student_dashboard(request):
         assignments = Assignment.objects.filter(subject__semester=assigned_semester, uploaded_at__gte=three_days_ago).order_by('-uploaded_at')[:5]
         for assign in assignments:
             notifications.append(f"📂 Assignment: {assign.title} uploaded {assign.uploaded_at.date()}")
-
+   
     context = {
         "tasks": tasks,
         "achievements": achievements,
@@ -1959,6 +2002,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+
 
 @login_required
 @csrf_exempt
@@ -2155,6 +2199,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
 
+
+         
 @login_required
 def start_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
@@ -2169,16 +2215,15 @@ def start_quiz(request, quiz_id):
             "score": 0,
             "started_at": now,
             "completed_at": None,
-            "answers_data": {},   # default empty dict
+            "answers_data": {},
         }
     )
 
-    # ensure answers_data is dict, not None
     if not quiz_result.answers_data:
         quiz_result.answers_data = {}
         quiz_result.save()
 
-    # Agar quiz pehle complete ho gaya hai
+    # Agar already complete ho chuka hai
     if quiz_result.status == "Completed":
         results = []
         for q in questions:
@@ -2208,7 +2253,6 @@ def start_quiz(request, quiz_id):
 
     remaining_seconds = max(0, (quiz.duration_minutes or 7) * 60 - elapsed)
 
-    # Time khatam → auto submit
     if remaining_seconds <= 0:
         quiz_result.status = "Completed"
         quiz_result.completed_at = now
@@ -2222,7 +2266,7 @@ def start_quiz(request, quiz_id):
             "message": " Time is up! Quiz auto-submitted."
         })
 
-    # Agar POST request hai (submit)
+    #  Agar POST request hai (submit quiz)
     if request.method == "POST":
         score = 0
         results = []
@@ -2247,71 +2291,15 @@ def start_quiz(request, quiz_id):
         quiz_result.answers_data = answers_data
         quiz_result.save()
 
-        return render(request, "backend/student/startquiz.html", {
-            "quiz": quiz,
-            "questions": questions,
-            "results": results,
-            "score": score,
-            "total": questions.count(),
-        })
-
-    # Agar GET request hai → quiz shuru karo
-    return render(request, "backend/student/startquiz.html", {
-        "quiz": quiz,
-        "questions": questions,
-        "score": None,
-        "remaining_seconds": remaining_seconds,
-        "quiz_duration": quiz.duration_minutes or 7
-    })
-
-    # Time calculate
-    if quiz_result.started_at:
-        elapsed = (now - quiz_result.started_at).total_seconds()
-    else:
-        quiz_result.started_at = now
-        quiz_result.save()
-        elapsed = 0
-
-    remaining_seconds = max(0, (quiz.duration_minutes or 7) * 60 - elapsed)
-
-    # Time khatam → auto submit
-    if remaining_seconds <= 0:
-        quiz_result.status = "Completed"
-        quiz_result.completed_at = now
-        quiz_result.save()
-        return render(request, "backend/student/startquiz.html", {
-            "quiz": quiz,
-            "questions": questions,
-            "results": [],
-            "score": quiz_result.score,
-            "total": questions.count(),
-            "message": " Time is up! Quiz auto-submitted."
-        })
-
-    # Agar POST request hai (submit)
-    if request.method == "POST":
-        score = 0
-        results = []
-        answers_data = {}
-
-        for q in questions:
-            selected = request.POST.get(str(q.id))
-            answers_data[str(q.id)] = selected or "Not Answered"
-            is_correct = (selected == q.correct_answer)
-            if is_correct:
-                score += 1
-            results.append({
-                "question": q.text,
-                "selected": selected or "Not Answered",
-                "correct": q.correct_answer,
-                "is_correct": is_correct
-            })
-
-        quiz_result.status = "Completed"
-        quiz_result.score = score
-        quiz_result.completed_at = now
-        quiz_result.answers_data = answers_data
-        quiz_result.save()
+        #  Performance Table Update (Overwrite Marks Only)
+        student = get_object_or_404(Student, user=request.user)
+        perf, created = Performance.objects.get_or_create(
+            student=student,
+            subject=quiz.subject,
+            semester=quiz.semester,
+        )
+        perf.quiz = score   # <-- overwrite karega, add nahi karega
+        perf.save()
 
         return render(request, "backend/student/startquiz.html", {
             "quiz": quiz,
@@ -2319,9 +2307,10 @@ def start_quiz(request, quiz_id):
             "results": results,
             "score": score,
             "total": questions.count(),
+            "message": "✅ Quiz submitted and performance updated (latest marks saved)!"
         })
 
-    # Agar GET request hai → quiz shuru karo
+    # Agar GET request hai
     return render(request, "backend/student/startquiz.html", {
         "quiz": quiz,
         "questions": questions,
@@ -2348,6 +2337,9 @@ def quiz_list_view(request):
     return render(request, "backend/student/my_quiz.html", {"quizzes_by_subject": quizzes_by_subject})
 
        
+       
+       
+  
 
 @login_required
 def profile_view(request):
@@ -2454,26 +2446,35 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Subject, Student, StudentSemester, AssignedSubject, Material, LectureFeedback
 
 
-#  Student Subjects + Lectures
+# Student Subjects + Lectures
+from django.db.models import Prefetch
+
+
+# Student Subjects + Lectures
 @login_required
 def subject_view(request):
     try:
         student = Student.objects.get(user=request.user)
 
-        # Student ka latest semester
-        student_semester = StudentSemester.objects.filter(student=student).order_by('-id').first()
+        # Student ke saare semesters fetch karo
+        student_semesters = StudentSemester.objects.filter(student=student)
 
-        if student_semester:
-            # Subjects of that semester
+        if student_semesters.exists():
+            # In semesters ke saare subjects le aao
             subject_ids = (
-                AssignedSubject.objects.filter(semester=student_semester.semester)
+                AssignedSubject.objects.filter(
+                    semester__in=student_semesters.values_list("semester", flat=True)
+                )
                 .values_list("subject", flat=True)
                 .distinct()
             )
-            # Prefetch materials (lectures)
+
+            # Subjects ke saath unke materials (lectures) bhi prefetch karo
             subjects = Subject.objects.filter(id__in=subject_ids).prefetch_related("material_set")
+
         else:
             subjects = Subject.objects.none()
+
     except Student.DoesNotExist:
         subjects = Subject.objects.none()
 
@@ -2579,7 +2580,7 @@ def feedback_view(request):
                 feedback.user = request.user
             feedback.save()
 
-            # ✅ User ka naam safely lena
+            #  User ka naam safely lena
             if feedback.user:
                 if feedback.user.first_name:
                     user_name = feedback.user.first_name  # sirf first name
@@ -2711,6 +2712,7 @@ def upload_assignment(request):
         if form.is_valid():
             assignment = form.save(commit=False)
             assignment.uploaded_by = request.user
+            assignment.student = student   # 🔹 ye line add karo
             assignment.save()
 
             messages.success(request, "Assignment uploaded successfully!")

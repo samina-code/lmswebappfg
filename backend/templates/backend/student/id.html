@@ -94,6 +94,7 @@
   <div id="notificationDropdown" class="notification-dropdown">
     <h5>Notifications</h5>
     <ul>
+      
       {% for note in notifications|slice:":4" %}
         <li>{{ note }}</li>
       {% empty %}
@@ -483,6 +484,46 @@ function toggleNotifications() {
     }
 }
 
+function markAsRead(feedbackId, el) {
+  fetch(`/mark-feedback-as-read/${feedbackId}/`, {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": getCookie("csrftoken"),
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "success") {
+        // item ko grey karo
+        el.style.opacity = "0.5";
+
+        // counter update karo
+        let notifCount = document.getElementById("notifCount");
+        if (notifCount) {
+          if (data.unread_count > 0) {
+            notifCount.textContent = data.unread_count;
+          } else {
+            notifCount.remove(); // agar 0 ho jaye toh badge hata do
+          }
+        }
+      }
+    });
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + "=")) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
 
 
 </script>

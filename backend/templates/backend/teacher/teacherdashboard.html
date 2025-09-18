@@ -458,28 +458,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     
-function markAsRead(feedbackId, el) {
-  $.ajax({
-    url: "{% url 'mark_feedback_as_read' 0 %}".replace("0", feedbackId),
-    type: "POST",
-    headers: { "X-CSRFToken": "{{ csrf_token }}" },
-    success: function(response) {
-      if (response.status === "success") {
-        el.style.opacity = "0.5"; // read hone par grey
-        let notifCount = document.getElementById("notifCount");
-        if (notifCount) {
-          if (response.unread_count > 0) {
-            notifCount.innerText = response.unread_count;
-          } else {
-            notifCount.remove(); // agar sab read ho jaye
-          }
-        }
-      }
-    }
-  });
-}
-
-
     function toggleNotifications() {
       const popup = document.getElementById("notificationsPopup");
       popup.style.display = popup.style.display === "block" ? "none" : "block";
@@ -531,6 +509,39 @@ fetch('/mark-feedback-read/', {
 .then(data => {
     console.log(data); // {"status": "success", "unread_count": 0}
 });
+function getCookie(name) {
+  // simple cookie reader
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let c of cookies) {
+      c = c.trim();
+      if (c.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(c.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+function markFeedbackRead(fbId) {
+  fetch(`/mark-feedback-as-read/${fbId}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrftoken
+    },
+    body: JSON.stringify({}) // if you don't need body, still can send empty
+  }).then(res => res.json()).then(data => {
+    if (data.status === 'success') {
+      // update UI: unread count, mark item visually, etc.
+      document.querySelector('#unread-count').textContent = data.unread_count;
+    }
+  });
+}
 
 
   </script>
