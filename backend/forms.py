@@ -44,14 +44,20 @@ class StudentForm(forms.ModelForm):
 
     def clean_contact(self):
         contact = self.cleaned_data.get('contact')
-        if contact and not re.fullmatch(r"\d{11,13}", contact):
-            raise ValidationError("Contact must be 11–13 digits (e.g. 923XXXXXXXXX).")
+        if contact and not re.fullmatch(r"\d{11}", contact):
+            raise ValidationError("Contact must be 11 digits (e.g. 0XXXXXXXXXX).")
+        if not re.fullmatch(r"0\d{10}", contact):
+            raise ValidationError("Contact must be 11 digits starting with 0.")
+
         return contact
 
     def clean_father_contact(self):
         f_contact = self.cleaned_data.get('father_contact')
-        if f_contact and not re.fullmatch(r"\d{11,13}", f_contact):
-            raise ValidationError("Father's contact must be 11–13 digits (e.g. 923XXXXXXXXX).")
+        if f_contact and not re.fullmatch(r"\d{11}", f_contact):
+            raise ValidationError("Father's contact must be 11 digits (e.g.  0XXXXXXXXXX).")
+        if not re.fullmatch(r"0\d{10}", f_contact):
+            raise ValidationError("Contact must be 11 digits starting with 0.")
+
         return f_contact
 
     def clean_email(self):
@@ -90,14 +96,20 @@ class UpdateStudentForm(forms.ModelForm):
 
     def clean_contact(self):
         contact = self.cleaned_data.get('contact')
-        if not contact.isdigit() or len(contact) not in [11, 13]:
-            raise forms.ValidationError("Contact must be 11 or 13 digits (e.g. 923XXXXXXXXX).")
+        if not contact.isdigit() or len(contact) not in [11]:
+            raise forms.ValidationError("Contact must be 11  digits (e.g. 0XXXXXXXXXX).")
+        if not re.fullmatch(r"0\d{10}", contact):
+            raise ValidationError("Contact must be 11 digits starting with 0.")
+
         return contact
 
     def clean_father_contact(self):
         father_contact = self.cleaned_data.get('father_contact')
-        if not father_contact.isdigit() or len(father_contact) not in [11, 13]:
-            raise forms.ValidationError("Father's contact must be 11 or 13 digits (e.g. 923XXXXXXXXX).")
+        if not father_contact.isdigit() or len(father_contact) not in [11]:
+            raise forms.ValidationError("Father's contact must be 11  digits (e.g.  0XXXXXXXXXX).")
+        if not re.fullmatch(r"0\d{10}", father_contact):
+            raise ValidationError("Contact must be 11 digits starting with 0.")
+
         return father_contact
 
     def save(self, commit=True):
@@ -117,7 +129,7 @@ class TeacherForm(forms.ModelForm):
         fields = ['name', 'contact', 'email', 'qualification', 'experience', 'image', 'address']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Enter full name'}),
-            'contact': forms.TextInput(attrs={'placeholder': '923XXXXXXXXX'}),
+            'contact': forms.TextInput(attrs={'placeholder': ' 0XXXXXXXXXX'}),
             'email': forms.EmailInput(attrs={'placeholder': 'example@email.com'}),
             'qualification': forms.TextInput(attrs={'placeholder': 'e.g. M.Sc. Physics'}),
             'experience': forms.NumberInput(attrs={'placeholder': 'Years of experience'}),
@@ -133,7 +145,10 @@ class TeacherForm(forms.ModelForm):
     def clean_contact(self):
         contact = self.cleaned_data.get('contact')
         if not re.fullmatch(r"\d{13}", contact):
-            raise ValidationError("Contact must be exactly 13 digits (e.g. 923XXXXXXXXX).")
+            raise ValidationError("Contact must be exactly 11 digits (e.g.  0XXXXXXXXXX).")
+        if not re.fullmatch(r"0\d{10}", contact):
+            raise ValidationError("Contact must be 11 digits starting with 0.")
+
         return contact
 
     def clean_email(self):
@@ -157,8 +172,11 @@ class UpdateTeacherForm(forms.ModelForm):
 
     def clean_contact(self):
         contact = self.cleaned_data.get('contact')
-        if not contact.isdigit() or len(contact) != 13:
-            raise forms.ValidationError("Contact must be exactly 13 digits (e.g. 923XXXXXXXXX).")
+        if not contact.isdigit() or len(contact) != 11:
+            raise forms.ValidationError("Contact must be exactly 11 digits (e.g. 0XXXXXXXXXX).")
+        if not re.fullmatch(r"0\d{10}", contact):
+            raise ValidationError("Contact must be 11 digits starting with 0.")
+
         return contact
 
     def clean_email(self):
